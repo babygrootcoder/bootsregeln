@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Bootsregeln St-Tropez</title>
+<meta name="description" content="Bootsfahrregeln für den Golf von Saint-Tropez — offline nutzbar">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Bootsregeln">
+<meta name="theme-color" content="#0b2a4a">
+<style>
+  :root {
+    --navy: #0b2a4a; --navy-2: #123a63; --blue: #1e6fb8; --sky: #e8f1f9;
+    --red: #d64541; --green: #1e8f4e; --yellow: #e6b800; --amber: #b45309;
+    --ink: #1a2733; --muted: #5b6b7a; --card: #ffffff; --bg: #f2f6fa;
+    --line: #dbe5ee; --safe-b: env(safe-area-inset-bottom, 0px); --safe-t: env(safe-area-inset-top, 0px);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg); color: var(--ink); line-height: 1.5;
+    padding-bottom: calc(64px + var(--safe-b));
+  }
+  header {
+    background: var(--navy); color: #fff; padding: calc(10px + var(--safe-t)) 16px 10px;
+    position: sticky; top: 0; z-index: 10; box-shadow: 0 1px 4px rgba(0,0,0,.25);
+  }
+  header h1 { font-size: 17px; font-weight: 700; }
+  header p { font-size: 12px; opacity: .75; }
+  main { max-width: 720px; margin: 0 auto; padding: 12px 12px 24px; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; animation: fadein .18s ease; }
+  @keyframes fadein { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; } }
+
+  .card {
+    background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+    padding: 14px 16px; margin: 10px 0; box-shadow: 0 1px 2px rgba(16,42,74,.05);
+  }
+  .card h2 { font-size: 16px; color: var(--navy); margin-bottom: 6px; }
+  .card h3 { font-size: 14px; color: var(--navy-2); margin: 12px 0 4px; }
+  .card p, .card li { font-size: 14.5px; }
+  .card ul { padding-left: 20px; margin: 6px 0; }
+  .card li { margin: 4px 0; }
+
+  .hero {
+    background: linear-gradient(135deg, var(--navy), var(--blue)); color: #fff;
+    border: none; text-align: center; padding: 18px 16px;
+  }
+  .hero .big { font-size: 34px; font-weight: 800; letter-spacing: -.5px; }
+  .hero .sub { font-size: 13px; opacity: .85; }
+
+  .badge {
+    display: inline-block; font-size: 11.5px; font-weight: 700; padding: 2px 9px;
+    border-radius: 20px; margin-bottom: 6px; text-transform: uppercase; letter-spacing: .4px;
+  }
+  .badge.rot { background: #fdecea; color: var(--red); }
+  .badge.gruen { background: #e7f6ec; color: var(--green); }
+  .badge.gelb { background: #fdf6dd; color: var(--amber); }
+  .badge.blau { background: var(--sky); color: var(--blue); }
+
+  /* Geltungsebenen */
+  .lvl { display: inline-block; font-size: 11px; font-weight: 700; padding: 2px 9px;
+    border-radius: 20px; margin: 0 4px 6px 0; letter-spacing: .3px; }
+  .lvl-int { background: #ede9fe; color: #6d28d9; }   /* KVR international */
+  .lvl-fr  { background: var(--sky); color: var(--blue); }  /* Frankreich national */
+  .lvl-med { background: #e7f6ec; color: var(--green); }    /* ganze frz. Mittelmeerküste */
+  .lvl-loc { background: #fdf6dd; color: var(--amber); }    /* Sektor / Gemeinde */
+  .src { display: block; font-size: 11.5px; color: var(--muted); margin-top: 8px; }
+
+  .callout {
+    border-left: 4px solid var(--red); background: #fdf2f1; border-radius: 8px;
+    padding: 10px 12px; margin: 10px 0; font-size: 14px;
+  }
+  .callout.info { border-color: var(--blue); background: var(--sky); }
+  .callout.ok { border-color: var(--green); background: #eef9f1; }
+
+  details { border-top: 1px solid var(--line); }
+  details:first-of-type { border-top: none; }
+  summary {
+    list-style: none; cursor: pointer; padding: 11px 0; font-size: 15px;
+    font-weight: 600; color: var(--navy-2); display: flex; justify-content: space-between; align-items: center;
+  }
+  summary::-webkit-details-marker { display: none; }
+  summary:after { content: "+"; font-size: 20px; color: var(--muted); font-weight: 400; }
+  details[open] summary:after { content: "–"; }
+  details .inner { padding: 0 0 12px; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; margin: 8px 0; }
+  th, td { text-align: left; padding: 7px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { background: var(--sky); color: var(--navy); font-size: 12.5px; }
+
+  .buoy-row { display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; border-top: 1px solid var(--line); }
+  .buoy-row:first-child { border-top: none; }
+  .buoy-row svg { flex: 0 0 64px; }
+  .buoy-row img.foto { flex: 0 0 64px; width: 64px; height: auto; align-self: center; border-radius: 6px; }
+  .buoy-row img.plate { flex: 0 0 112px; width: 112px; }
+  .buoy-row .txt { flex: 1; font-size: 14px; }
+  .buoy-row .txt b { color: var(--navy); }
+  .buoy-row .txt small { color: var(--muted); display: block; margin-top: 2px; }
+
+  .check { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; border-top: 1px solid var(--line); font-size: 14.5px; }
+  .check:first-child { border-top: none; }
+  .check input { width: 21px; height: 21px; margin-top: 1px; accent-color: var(--green); flex-shrink: 0; }
+  .check label { flex: 1; }
+  .check input:checked + label { color: var(--muted); text-decoration: line-through; }
+  .reset-btn {
+    display: block; margin: 10px auto 0; background: none; border: 1px solid var(--line);
+    border-radius: 8px; padding: 6px 14px; font-size: 13px; color: var(--muted); cursor: pointer;
+  }
+
+  .tel-btn {
+    display: flex; align-items: center; gap: 12px; background: var(--red); color: #fff;
+    border-radius: 14px; padding: 14px 16px; margin: 10px 0; text-decoration: none;
+    font-weight: 700; font-size: 17px; box-shadow: 0 2px 6px rgba(214,69,65,.35);
+  }
+  .tel-btn.blau { background: var(--blue); box-shadow: 0 2px 6px rgba(30,111,184,.35); }
+
+  /* Satellitenkarte */
+  .zoombar { display: flex; gap: 8px; margin: 8px 0; }
+  .zoombar button {
+    flex: 1; padding: 8px; border: 1px solid var(--line); border-radius: 8px;
+    background: var(--card); font-family: inherit; font-size: 13px; color: var(--navy-2); cursor: pointer;
+  }
+  .zoombar button.active { background: var(--blue); color: #fff; border-color: var(--blue); font-weight: 700; }
+  #satwrap {
+    width: 100%; height: 62vh; overflow: auto; -webkit-overflow-scrolling: touch;
+    border: 1px solid var(--line); border-radius: 10px; background: #0b2a4a; position: relative;
+  }
+  #satmap { position: relative; }
+  #satmap img { position: absolute; width: 256px; height: 256px; display: block; }
+  .sat-marker {
+    position: absolute; transform: translate(-50%, -50%); z-index: 5;
+    min-width: 22px; height: 22px; padding: 0 4px; border-radius: 11px;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 12px; font-weight: 700;
+    box-shadow: 0 1px 4px rgba(0,0,0,.6); border: 1.5px solid #fff;
+  }
+  .sat-marker.b { background: var(--blue); }
+  .sat-marker.r { background: var(--red); border-radius: 5px; }
+  .sat-marker.h { background: #0b2a4a; width: 14px; min-width: 14px; height: 14px; border-radius: 7px; }
+  .sat-attrib {
+    position: sticky; bottom: 0; left: 0; z-index: 6; display: inline-block;
+    background: rgba(255,255,255,.85); font-size: 10px; color: #333; padding: 2px 6px; border-radius: 0 6px 0 0;
+  }
+  .sat-zone { position: absolute; z-index: 4; cursor: pointer; }
+  .sat-zone.chenal { background: rgba(30,111,184,.30); border: 1.5px solid #1e6fb8; }
+  .sat-zone.ziem   { background: rgba(214,69,65,.38);  border: 1.5px solid #d64541; }
+  .sat-zone.zrub   { background: rgba(230,184,0,.40);  border: 1.5px solid #b48900; }
+  .sat-zone.vnm    { background: rgba(13,148,136,.40); border: 1.5px solid #0d9488; }
+  .sat-zone.aot    { background: rgba(30,143,78,.18);  border: 2px dashed #1e8f4e; }
+  .chip { display: inline-flex; min-width: 22px; height: 22px; padding: 0 4px; margin-right: 2px;
+    align-items: center; justify-content: center; color: #fff; font-size: 12.5px; font-weight: 700;
+    border: 1.5px solid #fff; box-shadow: 0 1px 3px rgba(0,0,0,.35); vertical-align: -4px; }
+  .chip.b { background: var(--blue); border-radius: 11px; }
+  .chip.r { background: var(--red); border-radius: 5px; }
+  .loc { border-top: 1px solid var(--line); padding-top: 4px; margin-top: 10px; scroll-margin-top: 70px; }
+  .loc:first-of-type { border-top: none; margin-top: 0; }
+  .zone-legend { display: flex; flex-wrap: wrap; gap: 6px 12px; font-size: 12px; margin: 8px 0 2px; }
+  .zone-legend span { display: inline-flex; align-items: center; gap: 5px; }
+  .zone-legend i { width: 14px; height: 14px; border-radius: 3px; display: inline-block; }
+  .tel-btn small { display: block; font-weight: 400; font-size: 12.5px; opacity: .9; }
+  .tel-btn .nr { font-size: 26px; font-weight: 800; }
+
+  nav {
+    position: fixed; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,.96);
+    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+    border-top: 1px solid var(--line); display: flex; z-index: 20;
+    padding-bottom: var(--safe-b);
+  }
+  nav button {
+    flex: 1; background: none; border: none; padding: 8px 2px 6px; cursor: pointer;
+    font-size: 10.5px; color: var(--muted); display: flex; flex-direction: column;
+    align-items: center; gap: 2px; font-family: inherit;
+  }
+  nav button svg { width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 1.8; }
+  nav button.active { color: var(--blue); font-weight: 700; }
+
+  footer { text-align: center; font-size: 11.5px; color: var(--muted); padding: 16px 20px 8px; }
+  footer a { color: var(--blue); }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>⚓ Bootsregeln — Golf von Saint-Tropez</h1>
+  <p>Boote unter 24 m · Offline-Nachschlagewerk · Stand Juli 2026 · ohne Gewähr</p>
+</header>
+
+<main>
+  <!-- Panels werden hier eingefügt -->
+  <section id="panel-regeln" class="tab-panel active">
+
+    <div class="card hero">
+      <div class="sub">In der 300-Meter-Küstenzone gilt immer:</div>
+      <div class="big">max. 5 Knoten</div>
+      <div class="sub">≈ 9 km/h — für alle Boote, Jetskis und Dinghis, auch ohne sichtbare Bojen. Gilt ebenso rund um Inseln und Felsen.</div>
+    </div>
+
+    <div class="card">
+      <h2>Welche Regel gilt wo? — Die 4 Ebenen</h2>
+      <p>Jede Karte in dieser App trägt eine Ebenen-Markierung:</p>
+      <p style="margin-top:8px">
+        <span class="lvl lvl-int">KVR · International</span>
+        <span class="lvl lvl-fr">Frankreich national</span><br>
+        <span class="lvl lvl-med">Ganze frz. Mittelmeerküste</span>
+        <span class="lvl lvl-loc">Lokal: Sektor/Gemeinde</span>
+      </p>
+      <ul>
+        <li><b>KVR</b> (Kollisionsverhütungsregeln, frz. RIPAM): weltweit auf See — Ausweichregeln, Lichter, Schallsignale.</li>
+        <li><b>Frankreich national:</b> Division 240 (Ausrüstung), Führerschein, Alkohol.</li>
+        <li><b>Ganze Mittelmeerküste:</b> Erlasse der Préfecture maritime (Toulon) — 300-m-Zone, Ankerrahmen. Von der spanischen Grenze bis Italien inkl. Korsika.</li>
+        <li><b>Lokal:</b> die Erlasse für den Golf (Tempo, Balisage der Gemeinden Ste-Maxime, Grimaud, St-Tropez) — ändern teils jede Saison.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <span class="lvl lvl-med">Ganze frz. Mittelmeerküste</span>
+      <h2>Die 300-m-Zone (bande des 300 mètres)</h2>
+      <ul>
+        <li>Gilt <b>generell und dauerhaft</b> — unabhängig davon, ob Bojen liegen.</li>
+        <li>Gemessen ab der Wasserlinie; gilt auch um <b>Inseln, Felsen aus dem Wasser und Hafenmolen</b>.</li>
+        <li>Innerhalb der Zone: <b>max. 5 Knoten</b> für alle Schiffe.</li>
+        <li>Lokale Erlasse können <b>tiefere oder höhere</b> Limits setzen (z.B. Sportkanäle) — Beschilderung/Plan de balisage beachten.</li>
+        <li>Ausnahmen nur für Rettungs- und Polizeifahrzeuge; auch für sie gilt KVR-Regel 6 (sichere Geschwindigkeit).</li>
+        <li>Abgesperrte <b>Badezonen</b> (gelbe Bojen) sind für alle Wasserfahrzeuge <b>komplett verboten</b> — auch für motorisierte Dinghis.</li>
+        <li>Strände nur über den markierten <b>Zufahrtskanal (chenal traversier)</b> anfahren — im Kanal max. 5 kn, kein Stopp, kein Ankern.</li>
+      </ul>
+      <span class="src">Quelle: Arrêté préfectoral n°109/2024 vom 30.04.2024, Art. 2 und 9 (ersetzt den oft noch zitierten AP 19/2018)</span>
+    </div>
+
+    <div class="card">
+      <span class="lvl lvl-int">KVR · International</span>
+      <h2>Ausweichregeln (KVR / RIPAM)</h2>
+      <details open>
+        <summary>Die Grundhierarchie</summary>
+        <div class="inner">
+          <p>Wer weicht wem aus? Merkreihenfolge — je weiter oben, desto eher hat man Vorrang:</p>
+          <ul>
+            <li><b>1. Manövrierunfähige / manövrierbehinderte Fahrzeuge</b> (auch Berufsfischer mit Gerät im Wasser)</li>
+            <li><b>2. Segelboote unter Segel</b></li>
+            <li><b>3. Motorboote</b> (dazu zählt auch ein Segler mit laufendem Motor!)</li>
+          </ul>
+          <p><b>Motor weicht Segel</b> — ausser das Segelboot überholt.</p>
+        </div>
+      </details>
+      <details>
+        <summary>Motorboot trifft Motorboot</summary>
+        <div class="inner">
+          <ul>
+            <li><b>Frontal (Bug auf Bug):</b> beide nach <b>Steuerbord</b> (rechts) ausweichen — Begegnung Backbord an Backbord.</li>
+            <li><b>Kreuzende Kurse:</b> Wer den anderen auf seiner <b>Steuerbordseite (rechts)</b> hat, muss ausweichen — sinngemäss «Rechts vor Links».</li>
+            <li><b>Überholen:</b> Der Überholer weicht <b>immer</b> aus, egal ob Motor oder Segel.</li>
+          </ul>
+        </div>
+      </details>
+      <details>
+        <summary>Richtig ausweichen</summary>
+        <div class="inner">
+          <ul>
+            <li><b>Frühzeitig und deutlich</b> ausweichen — grosse, klar erkennbare Kursänderung statt kleiner Korrekturen.</li>
+            <li>Möglichst <b>hinter dem Heck</b> des anderen durchfahren.</li>
+            <li>Der Kurshalter hält Kurs und Geschwindigkeit — reagiert aber, wenn der andere nicht ausweicht.</li>
+            <li>Ständigen <b>Rundumblick</b> halten, auch nach achtern (Jetskis!).</li>
+          </ul>
+        </div>
+      </details>
+      <details>
+        <summary>Fähren und Berufsschifffahrt im Golf</summary>
+        <div class="inner">
+          <p>Im Golf verkehren dauernd die <b>Fähren («Les Bateaux Verts»)</b> zwischen Sainte-Maxime, Port Grimaud, Les Issambres und Saint-Tropez sowie Ausflugs- und Fischerboote.</p>
+          <ul>
+            <li>Grossen Abstand halten, nie knapp vor dem Bug kreuzen.</li>
+            <li>Fahrgastschiffe im Manöver (Hafeneinfahrt St-Tropez!) sind faktisch manövrierbehindert — Vorrang geben.</li>
+          </ul>
+        </div>
+      </details>
+      <details>
+        <summary>Taucher und Schwimmer</summary>
+        <div class="inner">
+          <ul>
+            <li>Tauchboote führen die <b>Flagge Alpha</b> (weiss-blau); Einzeltaucher eine <b>rote Flagge mit weisser Diagonale</b>.</li>
+            <li>Im Umkreis von <b>100 m</b> um eine solche Flagge oder eine Harpunier-Boje: Geschwindigkeit so weit wie möglich reduzieren, <b>max. 5 kn</b> <span class="lvl lvl-med" style="margin:0">Mittelmeerküste</span></li>
+            <li>Schwimmer ausserhalb von Badezonen: weiträumig umfahren, Wellenschlag vermeiden.</li>
+          </ul>
+          <span class="src">Quelle: AP 109/2024, Art. 6</span>
+        </div>
+      </details>
+      <span class="src">Quelle KVR: Londoner Übereinkommen vom 20.10.1972 (RIPAM), in Frankreich publiziert per Décret n°77-733</span>
+    </div>
+
+    <div class="card">
+      <span class="lvl lvl-int">KVR · International</span>
+      <h2>Schallsignale (KVR Regeln 32–34)</h2>
+      <p>Kurzer Ton ≈ 1 s, langer Ton 4–6 s. Manöversignale, wenn Fahrzeuge einander sehen:</p>
+      <table>
+        <tr><th>Signal</th><th>Bedeutung</th></tr>
+        <tr><td>1 × kurz</td><td>«Ich ändere meinen Kurs nach <b>Steuerbord</b>»</td></tr>
+        <tr><td>2 × kurz</td><td>«Ich ändere meinen Kurs nach <b>Backbord</b>»</td></tr>
+        <tr><td>3 × kurz</td><td>«Meine Maschine geht <b>rückwärts</b>»</td></tr>
+        <tr><td>5 × kurz (oder mehr)</td><td><b>Zweifel/Warnung:</b> «Deine Absicht ist unklar / dein Manöver reicht nicht» — Achtung!</td></tr>
+      </table>
+      <p><small>Boote unter 12 m müssen keine Pfeife/Glocke an Bord haben, brauchen aber ein Mittel für ein wirksames Schallsignal (z.B. Drucklufthorn).</small></p>
+    </div>
+
+    <div class="card">
+      <span class="lvl lvl-int">KVR · International</span>
+      <h2>Verminderte Sicht — Nebel, Starkregen (KVR Regeln 19 + 35)</h2>
+      <ul>
+        <li><b>Sichere Geschwindigkeit</b> fahren, notfalls Fahrt ganz herausnehmen; Ausguck verstärken, leise stellen, hören.</li>
+        <li>Die normalen Vorfahrtsregeln gelten <b>nicht</b> wie gewohnt — jedes Fahrzeug muss selbst aktiv Kollisionen vermeiden.</li>
+        <li>Möglichst nicht nach Backbord ausweichen für ein Fahrzeug vorlicher als querab (Ausnahme: Überholen).</li>
+      </ul>
+      <h3>Nebelsignale (mind. alle 2 Minuten)</h3>
+      <table>
+        <tr><th>Signal</th><th>Wer</th></tr>
+        <tr><td>1 × lang</td><td>Motorfahrzeug <b>in Fahrt</b></td></tr>
+        <tr><td>2 × lang</td><td>Motorfahrzeug in Fahrt, aber <b>gestoppt</b></td></tr>
+        <tr><td>1 × lang + 2 × kurz</td><td>Segler, Fischer, Schlepper, manövrierbehindertes Fahrzeug</td></tr>
+        <tr><td>Glocke (5 s, jede Minute)</td><td>Fahrzeug <b>vor Anker</b> (unter 12 m: irgendein wirksames Signal)</td></tr>
+      </table>
+      <div class="callout info">Praxis im Golf: Bei aufziehendem Nebel oder Gewitterböen (Sommergewitter!) früh Richtung Hafen — kleine Boote sind auf keinem Radar.</div>
+    </div>
+
+    <div class="card">
+      <span class="lvl lvl-fr">Frankreich national</span>
+      <h2>Führerschein, Flagge, Alkohol</h2>
+      <ul>
+        <li><b>Führerschein (permis plaisance)</b> ist in Frankreich Pflicht für Motorboote über <b>6 PS (4,5 kW)</b>. Das «permis côtier» erlaubt Fahrten bis 6 sm von einem Schutzort.</li>
+        <li><b>Ausländische Flagge:</b> Frz. Führerschein- und Ausrüstungsregeln gelten für ausländisch beflaggte Sportboote nur, wenn Eigner/Nutzer den <b>Hauptwohnsitz in Frankreich</b> hat. Sonst gelten die Regeln des <b>Flaggenstaats</b> — Dokumente an Bord mitführen. Die Verkehrs- und Zonenregeln gelten aber für <b>alle</b>, egal welche Flagge.</li>
+        <li><b>Alkohol:</b> Grenzwert <b>0,5 g/l</b> Blut. 0,5–0,8: Busse bis 750 €; ab <b>0,8 g/l</b>: Straftat, bis 4'500 €, Entzug des Permis, sogar Beschlagnahme des Boots möglich. Seit 05.06.2026 eigene Tatbestände für Motor-Sportboote (Décret n°2026-434). Kontrollen im Sommer häufig.</li>
+        <li><b>Mitzuführen:</b> Registrierungsdokument des Boots, Führerschein, Versicherungsnachweis, ggf. Funkzeugnis.</li>
+      </ul>
+      <div class="callout info">
+        <b>Gendarmerie maritime</b> und Douane kontrollieren im Golf regelmässig: Papiere, Ausrüstung, Tempo in der 300-m-Zone und Ankerplätze.
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="lvl lvl-med">Ganze frz. Mittelmeerküste</span>
+      <h2>Jetski, Wasserski &amp; Wassersport</h2>
+      <ul>
+        <li><b>Jetski (VNM):</b> führerscheinpflichtig. In der 300-m-Zone max. 5 kn und nur:
+          bei markiertem Plan de balisage <b>im dafür zugelassenen Kanal</b> (parallel zur Achse);
+          ohne Markierung <b>senkrecht zum Ufer</b>, direkt und ohne Umherfahren — nur um das Ufer zu erreichen oder zu verlassen. Sektorweise können Verbote gelten (auch ausserhalb der 300 m).</li>
+        <li><b>Wasserski / Bouée tractée:</b> nur <b>bei Tag</b>, nur <b>ausserhalb</b> der 300-m-Zone (Transit via Sportkanal). <b>2 Personen an Bord</b> Pflicht: eine steuert, eine beobachtet (privat: Beobachter mind. 16 Jahre). Gezogene tragen Westen; Boot führt einen <b>orangen Wimpel (2 m)</b> und muss alle Gezogenen aufnehmen können.</li>
+        <li><b>eFoil/Flyboard (ESH):</b> nur bei Tag, ausserhalb 300 m, max. 2 sm von einem Schutzort.</li>
+      </ul>
+      <span class="src">Quelle: AP 109/2024, Art. 3–5 und 7</span>
+    </div>
+
+  </section>
+  <section id="panel-bojen" class="tab-panel">
+
+    <div class="card">
+      <span class="lvl lvl-int">IALA A · International</span>
+      <h2>Fahrwasser-Betonnung (lateral)</h2>
+      <p>Gilt bei der Einfahrt <b>von See Richtung Hafen</b> («von See kommend»). International einheitlich in <b>IALA-Region A</b> (ganz Europa, Afrika, Asien, Australien); nur in Region B (Amerika, Japan, Korea, Philippinen) sind die Lateralfarben vertauscht. Kardinal-, Gefahren-, Fahrwasser- und Sonderzeichen gelten <b>weltweit gleich</b>.</p>
+      <ul>
+        <li><b>Rote Tonnen (zylindrisch, «stumpf») = Backbord:</b> bei der Einfahrt <b>links</b> liegen lassen. Feuer (falls vorhanden): <b>rot</b>, Rhythmus beliebig.</li>
+        <li><b>Grüne Tonnen (konisch, «spitz») = Steuerbord:</b> bei der Einfahrt <b>rechts</b> liegen lassen — bei der Ausfahrt alles seitenverkehrt. Feuer: <b>grün</b>, Rhythmus beliebig.</li>
+      </ul>
+      <figure style="margin:10px 0 4px">
+        <img src="plaene/boje-lat-a.jpg" alt="Lateralmarken mit Feuer-Kennungen — BSH/BMDV «Sicherheit auf dem Wasser», 12/2023. Pricke/Besen-Toppzeichen: nur deutsche Küstengewässer, im Mittelmeer nicht verwendet." loading="lazy" style="aspect-ratio:1200/308;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Lateralmarken mit Feuer-Kennungen — BSH/BMDV «Sicherheit auf dem Wasser», 12/2023. Pricke/Besen-Toppzeichen: nur deutsche Küstengewässer, im Mittelmeer nicht verwendet.</figcaption>
+      </figure>
+    </div>
+
+    <div class="card">
+      <span class="lvl lvl-int">IALA A · International</span>
+      <h2>Kardinaltonnen — wo ist das sichere Wasser?</h2>
+      <p>Gelb-schwarze Tonnen mit zwei Kegeln als Toppzeichen. Sie zeigen, auf welcher <b>Himmelsrichtungs-Seite</b> man die Gefahr passieren muss — alle Kardinalfeuer sind <b>weiss</b>, die Blitzzahl folgt dem Ziffernblatt (3 = Ost, 6 = Süd, 9 = West):</p>
+      <ul>
+        <li><b>Nord</b> — beide Kegel nach oben, Schwarz über Gelb: <b>nördlich</b> passieren. Feuer: ununterbrochenes Funkeln.</li>
+        <li><b>Ost</b> — Kegel auseinander: <b>östlich</b> passieren. Feuer: <b>3</b> Blitze alle 5 bzw. 10 s.</li>
+        <li><b>Süd</b> — beide Kegel nach unten, Gelb über Schwarz: <b>südlich</b> passieren. Feuer: <b>6</b> Blitze + 1 langer Blitz alle 10 bzw. 15 s.</li>
+        <li><b>West</b> — Kegel zueinander («Weinglas»): <b>westlich</b> passieren. Feuer: <b>9</b> Blitze alle 10 bzw. 15 s.</li>
+      </ul>
+      <figure style="margin:10px 0 4px">
+        <img src="plaene/boje-cardinal.jpg" alt="Kardinalzeichen mit Toppzeichen und Kennungen (SFkl. = schnelles Funkelfeuer, Fkl. = Funkelfeuer) — BSH/BMDV «Sicherheit auf dem Wasser», 12/2023" loading="lazy" style="aspect-ratio:1200/1177;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Kardinalzeichen mit Toppzeichen und Kennungen (SFkl. = schnelles Funkelfeuer, Fkl. = Funkelfeuer) — BSH/BMDV «Sicherheit auf dem Wasser», 12/2023</figcaption>
+      </figure>
+    </div>
+
+    <div class="card">
+      <h2>Weitere Seezeichen</h2>
+      <h3>Einzelgefahr</h3>
+      <p>Schwarz-rot mit <b>2 schwarzen Kugeln</b> — steht <b>direkt auf</b> der Gefahr (Fels, Wrack): mit Abstand auf beliebiger Seite passieren. Feuer: <b>weiss, Blitzgruppen à 2</b> (alle 5 oder 10 s).</p>
+      <figure style="margin:10px 0 4px">
+        <img src="plaene/boje-danger.jpg" alt="Einzelgefahrenstellen — an allen Seiten passierbar — BSH/BMDV «Sicherheit auf dem Wasser», 12/2023" loading="lazy" style="aspect-ratio:1087/681;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Einzelgefahrenstellen — an allen Seiten passierbar — BSH/BMDV «Sicherheit auf dem Wasser», 12/2023</figcaption>
+      </figure>
+      <h3>Sicheres Fahrwasser</h3>
+      <p>Rot-weiss <b>senkrecht</b> gestreift, 1 rote Kugel als Topp — ringsum sicheres Wasser (z.B. Ansteuerung, Fahrwassermitte). Feuer: <b>weiss</b> — Isophase, Unterbrochen, 1 langer Blitz alle 10 s oder Morse «A».</p>
+      <figure style="margin:10px 0 4px">
+        <img src="plaene/boje-eaux.jpg" alt="Fahrwassermitte/Ansteuerung (sicheres Fahrwasser) — BSH/BMDV «Sicherheit auf dem Wasser», 12/2023" loading="lazy" style="aspect-ratio:1087/605;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Fahrwassermitte/Ansteuerung (sicheres Fahrwasser) — BSH/BMDV «Sicherheit auf dem Wasser», 12/2023</figcaption>
+      </figure>
+      <h3>Sonderzeichen</h3>
+      <p><b>Gelb</b>, Form beliebig, gelbes <b>X</b> als Topp — markiert Sonderzonen (Badezonen, Kabel, Sperrgebiete, 300-m-Grenze); Bedeutung gemäss Seekarte/Ortsplan. Feuer: <b>gelb</b>, Rhythmus anders als bei den weissen Kennungen.</p>
+      <figure style="margin:10px 0 4px">
+        <img src="plaene/boje-spez.jpg" alt="Sonderzeichen: besondere Gebiete und Stellen (gelb) — BSH/BMDV «Sicherheit auf dem Wasser», 12/2023" loading="lazy" style="aspect-ratio:1200/464;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Sonderzeichen: besondere Gebiete und Stellen (gelb) — BSH/BMDV «Sicherheit auf dem Wasser», 12/2023</figcaption>
+      </figure>
+    </div>
+
+    <div class="card">
+      <span class="lvl lvl-loc">Lokal: Gemeinde</span>
+      <h2>Gelbe Bojen am Strand — der Plan de balisage</h2>
+      <p>Amtlich normierte Formen (Arrêté 27.03.1991): alle Bojen <b>ausschliesslich gelb (RAL 1003)</b> — die Form sagt, was gemeint ist (Abbildungen: SHOM, Ouvrage 3):</p>
+      <div class="buoy-row">
+        <img style="aspect-ratio:312/351;height:auto;" class="foto" src="plaene/boje-kugel.jpg" alt="Kugelförmige gelbe Boje (SHOM)" loading="lazy">
+        <div class="txt"><b>Kugelförmig — Zonengrenze</b><br>Markiert die äussere 300-m-Grenze (grosse Tonnen Ø 0,8 m, alle 200 m) und die Grenzen der Zonen innerhalb (Badezone, ZIEM…; Ø 0,4–0,6 m).<small>Zwischen Badezonen-Bojen kann zusätzlich eine gelbe Schwimmleine liegen.</small></div>
+      </div>
+      <div class="buoy-row">
+        <img style="aspect-ratio:270/351;height:auto;" class="foto" src="plaene/boje-zylinder.jpg" alt="Zylindrische gelbe Boje (SHOM)" loading="lazy">
+        <div class="txt"><b>Zylindrisch («stumpf») — Backbordseite des Chenals</b><br>Bei der Fahrt <b>vom Meer Richtung Strand</b>: diese Bojen links lassen.<small>Gleiche Logik wie im Hafen — nur alles in Gelb.</small></div>
+      </div>
+      <div class="buoy-row">
+        <img style="aspect-ratio:291/351;height:auto;" class="foto" src="plaene/boje-kegel.jpg" alt="Konische gelbe Boje (SHOM)" loading="lazy">
+        <div class="txt"><b>Konisch («spitz») — Steuerbordseite des Chenals</b><br>Bei der Fahrt <b>vom Meer Richtung Strand</b>: diese Bojen rechts lassen. Bei der Ausfahrt seitenverkehrt.</div>
+      </div>
+      <p>An Land stehen zudem normierte <b>Piktogramm-Tafeln</b> (rot durchgestrichen = verboten): Motorboot, Segler, Jetski, Wasserski, Windsurf, Baden, 5-kn-Limit.</p>
+      <p style="margin-top:8px">Der Plan de balisage jeder Gemeinde besteht aus zwei Erlassen: Préfet maritime (Schifffahrt, Ankern, Tauchen) und Bürgermeister (Baden, nicht-registrierte Geräte). Die Zonen:</p>
+      <ul>
+        <li><b>Gelbe Kugel-Bojen in Reihe parallel zum Strand:</b> Grenze der Badezone — dahinter (seeseitig) gilt weiter 5 kn, innen ist <b>jedes Fahrzeug verboten</b>.</li>
+        <li><b>Chenal traversier</b> (Bojengasse senkrecht zum Strand): Transitkorridor zwischen Ufer und offenem Wasser. Regeln: nur an den Enden einfahren, direkt und kontinuierlich durchfahren, max. 5 kn, <b>kein Stopp, kein Ankern</b>. Nicht-motorisierte Dinghis dürfen nicht hinein (ausser die Gemeinde erlaubt es).</li>
+        <li><b>Sportkanäle</b> (chenaux sports nautiques de vitesse): nur für Wasserski &amp; Co. — dort gilt das 5-kn-Limit nicht.</li>
+        <li><b>ZIEM</b> (zone interdite aux embarcations motorisées): komplett gesperrt für alles mit Motor — auch wenn der Motor nur montiert und nicht in Betrieb ist. Kajaks/Ruderboote meist erlaubt, Tauchen verboten (ausser Sonderregelung).</li>
+        <li><b>ZIM</b> (zone interdite au mouillage): Ankerverbotszone.</li>
+        <li><b>ZMP</b> (zone de mouillage propre): Ankern nur für Boote mit Fäkalientank.</li>
+        <li>Die 300-m-Grenze ist oft mit einzelnen grossen gelben Tonnen markiert — die 5-kn-Regel gilt aber <b>auch ohne</b> Tonnen.</li>
+        <li><b>An Balisage-Bojen festmachen ist verboten.</b></li>
+      </ul>
+      <div class="callout">
+        In Les Canoubiers, Beauvallon und vor den Stränden von Sainte-Maxime wird das Bojen-Layout <b>jede Saison neu ausgelegt</b> — nie blind nach Vorjahres-Erinnerung fahren.
+      </div>
+      <h3>So sieht es vor dem Strand aus (amtliche Illustration)</h3>
+      <figure style="margin:6px 0">
+        <img src="plaene/dirm-strand.jpg" alt="Strand-Balisierung schematisch (SHOM)" loading="lazy"
+             style="aspect-ratio:1400/1290;height:auto;width:100%;max-width:420px;display:block;margin:0 auto;border-radius:10px;border:1px solid var(--line)">
+        <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px;text-align:center">Amtliches Beispiel einer Strand-Balisierung: Badezone, Bordure extérieure, Chenal traversier, 300 m, max. 5 kn — SHOM, Ouvrage 3</figcaption>
+      </figure>
+      <span class="src">Quellen: Arrêté vom 27.03.1991 (Bojen-Normen) · SHOM Ouvrage 3 «Signalisation maritime» (Abbildungen) · Fiche «Le balisage des zones de loisirs» mer.gouv.fr (03/2025) · AP 109/2024, Art. 9 (Zonen-Definitionen)</span>
+    </div>
+
+    <div class="card">
+      <h2>Lichter bei Nacht (Kleinfahrzeuge)</h2>
+      <table>
+        <tr><th>Was du siehst</th><th>Bedeutung</th></tr>
+        <tr><td>Rot + Grün + weisses Hecklicht</td><td>Motorboot in Fahrt — Kurs aus Farbkombination ablesen</td></tr>
+        <tr><td>Nur Rot oder nur Grün (+ Heck)</td><td>Segelboot unter Segel — ausweichen!</td></tr>
+        <tr><td>Weisses Rundumlicht</td><td>Ankerlieger oder kleines Boot &lt; 7 m</td></tr>
+        <tr><td>Grün über Weiss</td><td>Fischer beim Schleppen — grossen Abstand</td></tr>
+        <tr><td>Rot über Weiss</td><td>Fischer (nicht schleppend)</td></tr>
+      </table>
+      <figure style="margin:10px 0 4px">
+        <img src="plaene/feuer-legende.jpg" alt="Feuer-Kennungen Zeichenerklärung (BSH)" loading="lazy" style="aspect-ratio:1200/742;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Feuer-Kennungen lesen: Unterbrochen (Oc), Gleichtakt (Iso), Blitz (Fl), Funkel (Q), Schnelles Funkel (VQ), Blink (LFl) — BSH/BMDV «Sicherheit auf dem Wasser», 12/2023</figcaption>
+      </figure>
+      <p><small>Faustregel: Siehst du <b>rot</b> (fremde Backbordseite), hat der andere Vorrang — siehst du <b>grün</b>, hast in der Regel du Vorrang. Im Zweifel: ausweichen.</small></p>
+    </div>
+
+  </section>
+  <section id="panel-karte" class="tab-panel">
+
+    <div class="card">
+      <span class="lvl lvl-loc">Lokal: Golf-Gemeinden</span>
+      <h2>Satellitenansicht mit Zonen-Markern</h2>
+      <p><small>Amtliche Orthofotos (IGN Géoplateforme). Braucht beim ersten Anschauen Internet — bereits geladene Kacheln bleiben offline verfügbar. <b style="color:var(--blue)">Blau</b> = Badezonen/Kanäle, <b style="color:var(--red)">rot</b> = Verbotszonen, dunkel = Häfen. Positionen ungefähr — massgebend sind die Bojen vor Ort.</small></p>
+      <div class="zoombar" id="zoombar">
+        <button data-z="13">Übersicht</button>
+        <button data-z="15">Mittel</button>
+        <button data-z="16">Detail</button>
+      </div>
+      <div id="satwrap">
+        <div id="satmap"></div>
+        <span class="sat-attrib">© IGN / Géoplateforme — Orthophotos, Licence Ouverte</span>
+      </div>
+      <p><small><b>Marker antippen</b> springt zum Abschnitt des Orts — mit Regeln und amtlichem Kartenausschnitt direkt beieinander. Tipp: Mit dem Finger verschieben; wenn Kacheln grau bleiben, Internetverbindung prüfen.</small></p>
+    </div>
+
+    <div class="card">
+      <span class="lvl lvl-loc">Lokal: Golf</span>
+      <h2>Tempolimiten im Golf</h2>
+      <table>
+        <tr><th>Wo</th><th>Limit</th><th>Grundlage</th></tr>
+        <tr><td>300-m-Küstenzone (überall)</td><td><b>5 kn</b></td><td>AP 109/2024, permanent</td></tr>
+        <tr><td><b>Baie des Canoubiers komplett</b> + Zone von der Balise La Rabiou bis Pointe de Capon — gelbe Bojenlinie weit im Golf, jede Saison neu gesetzt</td><td><b>5 kn</b>, auch ausserhalb der 300 m</td><td>AP 11/95 (geändert), bestätigt in AP 297/2026 Art. 3</td></tr>
+        <tr><td>300-m-Radius um die Tourellen <b>Sardinaux, Sèche à l'Huile, Rabiou, La Moutte</b></td><td><b>5 kn</b></td><td>AP 11/95 Art. 1.2</td></tr>
+        <tr><td>Baie de Pampelonne, <b>15.06.–15.09.</b> ganze Bucht bis Linie Cap du Pinet–Pte de Bonne Terrasse</td><td><b>5 kn</b></td><td>AP 11/95 Art. 1.3</td></tr>
+        <tr><td>Zufahrtskanäle, Bojenfelder (AOT/ZMEL), Mouillage-Zonen</td><td><b>5 kn</b>, nur An-/Abfahrt</td><td>Balisage-Erlasse</td></tr>
+        <tr><td>100 m um Taucherflagge/Harpunier-Boje</td><td><b>max. 5 kn</b></td><td>AP 109/2024 Art. 6</td></tr>
+        <tr><td><b>Übriger Golf</b> (bis Linie Pte des Sardinaux–Sèche à l'Huile–La Rabiou) sowie Buchten Pampelonne/Bonporteau ausserhalb der 5-kn-Zonen</td><td><b>20 kn</b></td><td>AP 11/95 Art. 2</td></tr>
+      </table>
+      <div class="callout">
+        <b>Praxis Canoubiers:</b> Die gelbe Bojenlinie erst <b>seewärts passieren, dann beschleunigen</b> — einwärts früh Fahrt wegnehmen. Innerhalb gelten zusätzlich die Zonen des Ortsplans (Marker 10). <a href="#" onclick="var f=document.getElementById('fig-st-uebersicht');if(f){f.scrollIntoView({behavior:'smooth'});f.style.outline='3px solid var(--blue)';setTimeout(function(){f.style.outline='none'},2500);}return false" style="color:var(--blue);font-weight:600">→ Amtliche Karte der 5-kn-Linie</a>
+      </div>
+      <h3>Wasserski &amp; Ziehen von Fun-Geräten im Golf (AP 11/95 Art. 3)</h3>
+      <ul>
+        <li>Verboten in der ganzen erweiterten 5-kn-Zone (siehe oben).</li>
+        <li><b>15.06.–15.09., 11–18 Uhr:</b> zusätzlich im ganzen 20-kn-Bereich des Golfs verboten — <b>ausser</b> seewärts der Linien Pte des Sardinaux–Nordmole Port Grimaud bzw. Hauptmole Marines de Cogolin–Südmole Port St-Tropez.</li>
+      </ul>
+      <span class="src">Quellen: AP n°11/95 vom 09.06.1995 (Original, Volltext geprüft; «modifié» — Änderungsstand Canoubiers via AP 297/2026 vom 24.07.2026, Art. 3 bestätigt) · AP 109/2024 · Balisage-Erlasse</span>
+    </div>
+
+    <div class="card">
+      <span class="lvl lvl-loc">Lokal: Gemeinde</span>
+      <h2>Sainte-Maxime — Nordufer (AP 168/2026 vom 01.06.2026)</h2>
+      <figure id="fig-sm-uebersicht" style="margin:8px 0 4px">
+        <img src="plaene/sm-uebersicht.jpg" alt="Übersicht ganze Gemeinde (Annexe I)" loading="lazy" style="aspect-ratio:1066/808;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Übersicht ganze Gemeinde (Annexe I)</figcaption>
+      </figure>
+      <div class="loc" id="loc-1">
+      <h3><span class="chip b">1</span> La Croisette</h3>
+      <ul>
+        <li>Zufahrt nur durch Kanal 3 (Motorboote, 20×100 m); Kanal 4 ist den Rettungsbooten vorbehalten.</li>
+        <li>Badezonen ZRUB 1b und 2b gelten <b>ganzjährig</b>.</li>
+      </ul>
+      <figure style="margin:8px 0 4px">
+        <img src="plaene/sm-croisette.jpg" alt="Annexe II" loading="lazy" style="aspect-ratio:1050/808;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Annexe II</figcaption>
+      </figure>
+      <figure style="margin:8px 0 4px">
+        <img src="plaene/sm-croisette-zrub.jpg" alt="Annexe II bis — Badezonen" loading="lazy" style="aspect-ratio:1050/808;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Annexe II bis — Badezonen</figcaption>
+      </figure>
+      </div>
+      <div class="loc" id="loc-2">
+      <h3><span class="chip b">2</span> Centre-Ville / Hafen</h3>
+      <ul>
+        <li>110 m breiter Hafen-Zufahrtskanal 7 bis zur 300-m-Linie.</li>
+        <li>Westlich davon ZIEM 1m (210×100 m, Motorverbot), Préconil-Mündung bis Pointe de la Croisette.</li>
+      </ul>
+      <figure style="margin:8px 0 4px">
+        <img src="plaene/sm-centre-ville.jpg" alt="Annexe III" loading="lazy" style="aspect-ratio:1050/808;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Annexe III</figcaption>
+      </figure>
+      </div>
+      <div class="loc" id="loc-A">
+      <h3><span class="chip r">A</span> La Madrague — ZIEM</h3>
+      <ul>
+        <li>ZIEM 2m über die ganze Strandbreite (660×100 m) — Motorboote komplett verboten.</li>
+      </ul>
+      <figure style="margin:8px 0 4px">
+        <img src="plaene/sm-madrague.jpg" alt="Annexe IV" loading="lazy" style="aspect-ratio:1050/808;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Annexe IV</figcaption>
+      </figure>
+      </div>
+      <div class="loc" id="loc-B">
+      <h3><span class="chip r">B</span> Pointe des Sardinaux — ZIEM + Insel-Sperrzone</h3>
+      <ul>
+        <li>ZIEM 3m nördlich der Pointe (450×220 m); Tauchen vom Ufer aus hier ausnahmsweise erlaubt.</li>
+        <li>Um die Tourelle des Sardinaux: Navigations-/Ankersperrzone bis 15.09.2026 (AP 46/2026) und 5 kn im 300-m-Radius (AP 11/95).</li>
+      </ul>
+      <figure style="margin:8px 0 4px">
+        <img src="plaene/sm-sardinaux.jpg" alt="Annexe V" loading="lazy" style="aspect-ratio:1050/808;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Annexe V</figcaption>
+      </figure>
+      <figure style="margin:8px 0 4px">
+        <img src="plaene/sm-tourelle-sardinaux.jpg" alt="Annexe V bis — Tourelle des Sardinaux" loading="lazy" style="aspect-ratio:1050/808;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Annexe V bis — Tourelle des Sardinaux</figcaption>
+      </figure>
+      </div>
+      <div class="loc" id="loc-3">
+      <h3><span class="chip b">3</span> La Nartelle</h3>
+      <ul>
+        <li>Kanäle 8–11: Nr. 8 auch Jetski + eFoil, Nr. 11 auch Jetski, Nr. 10 Motorboote + Rettung, Nr. 9 Motorboote.</li>
+        <li>Dazwischen ZIEM 4m und 5m; Jetski-Ankerplätze beidseits von Kanal 8; Badezone ZRUB 6b ganzjährig.</li>
+      </ul>
+      <figure style="margin:8px 0 4px">
+        <img src="plaene/sm-nartelle.jpg" alt="Annexe VI" loading="lazy" style="aspect-ratio:1050/808;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Annexe VI</figcaption>
+      </figure>
+      <figure style="margin:8px 0 4px">
+        <img src="plaene/sm-nartelle-zrub.jpg" alt="Annexe VI bis — Badezonen" loading="lazy" style="aspect-ratio:1050/808;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Annexe VI bis — Badezonen</figcaption>
+      </figure>
+      </div>
+      <div class="loc" id="loc-C">
+      <h3><span class="chip r">C</span> Les Éléphants — ZIEM</h3>
+      <ul>
+        <li>ZIEM 6m über die ganze Strandbreite (395×80 m) — Motorboote komplett verboten.</li>
+      </ul>
+      <figure style="margin:8px 0 4px">
+        <img src="plaene/sm-elephants.jpg" alt="Annexe VII" loading="lazy" style="aspect-ratio:1050/808;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Annexe VII</figcaption>
+      </figure>
+      </div>
+      <div class="loc" id="loc-4">
+      <h3><span class="chip b">4</span> La Garonnette</h3>
+      <ul>
+        <li>Kanäle 12 (auch Jetski/eFoil), 13 (Rettung) und 15; ZIEM 7m (75×80 m); Jetski-Ankerplatz.</li>
+      </ul>
+      <figure style="margin:8px 0 4px">
+        <img src="plaene/sm-garonnette.jpg" alt="Annexe VIII" loading="lazy" style="aspect-ratio:1050/808;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Annexe VIII</figcaption>
+      </figure>
+      </div>
+      <span class="src">Quelle: AP 168/2026, Art. 1–6 + Annexes I–VIII · Insel-Sperrzone: AP 46/2026</span>
+    </div>
+    <div class="card">
+      <span class="lvl lvl-loc">Lokal: Gemeinde</span>
+      <h2>Grimaud — Westufer (AP 242/2024 vom 28.06.2024)</h2>
+      <div class="loc" id="loc-5">
+      <h3><span class="chip b">5</span> Port-Grimaud-Strand</h3>
+      <ul>
+        <li>Kanal 1 (40×300 m, auch Jetski) + Rettungskanal (15×300 m); Jetski-Ankerplatz der Basis.</li>
+      </ul>
+      <figure style="margin:8px 0 4px">
+        <img src="plaene/gr-port-grimaud.jpg" alt="Annexe I" loading="lazy" style="aspect-ratio:1096/808;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Annexe I</figcaption>
+      </figure>
+      </div>
+      <div class="loc" id="loc-6">
+      <h3><span class="chip b">6</span> Saint-Pons / Les Mûres / Gros Pin</h3>
+      <ul>
+        <li>Kanäle 2–5 (alle auch Jetski-Transit); Kanal 5 beim Gros Pin; ZIEM J bis zum Strandende.</li>
+        <li>Private Bojenfelder (AOT 1/1bis) seeseitig — Festmachen nur mit Bewilligung des Präfekten.</li>
+      </ul>
+      <figure style="margin:8px 0 4px">
+        <img src="plaene/gr-mures-1.jpg" alt="Annexe II — Les Mûres 1" loading="lazy" style="aspect-ratio:1120/808;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Annexe II — Les Mûres 1</figcaption>
+      </figure>
+      <figure style="margin:8px 0 4px">
+        <img src="plaene/gr-mures-2.jpg" alt="Annexe III — Les Mûres 2" loading="lazy" style="aspect-ratio:1091/808;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Annexe III — Les Mûres 2</figcaption>
+      </figure>
+      </div>
+      <div class="loc" id="loc-7">
+      <h3><span class="chip b">7</span> Beauvallon / Vieux Moulin</h3>
+      <ul>
+        <li>Kanäle 6 + 7, ZIEM L (100 m tief).</li>
+        <li><b>ZRUB K ganzjährig gesperrt</b> (Unterwasser-Bauwerk) — gilt auch ohne Bojen; ausserhalb der Saison als ZIEM weitergeführt.</li>
+        <li>Bojenfelder AOT 3 (Vieux Moulin) und 4 (Pingouin Bleu).</li>
+      </ul>
+      <figure style="margin:8px 0 4px">
+        <img src="plaene/gr-vieuxmoulin-beauvallon.jpg" alt="Annexe IV" loading="lazy" style="aspect-ratio:1091/808;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Annexe IV</figcaption>
+      </figure>
+      </div>
+      <div class="loc" id="loc-8">
+      <h3><span class="chip b">8</span> Guerrevieille / Les Cigales</h3>
+      <ul>
+        <li>Kanal 8, ZIEM P und Q, Bojenfelder AOT 5/6.</li>
+      </ul>
+      <figure style="margin:8px 0 4px">
+        <img src="plaene/gr-guerrevieille-1.jpg" alt="Annexe V" loading="lazy" style="aspect-ratio:1103/808;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Annexe V</figcaption>
+      </figure>
+      <figure style="margin:8px 0 4px">
+        <img src="plaene/gr-cigales-guerrevieille-2.jpg" alt="Annexe VI — Les Cigales + Guerrevieille 2" loading="lazy" style="aspect-ratio:1097/808;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Annexe VI — Les Cigales + Guerrevieille 2</figcaption>
+      </figure>
+      </div>
+      <span class="src">Quelle: AP 242/2024, Art. 1–7 + Annexes I–VI</span>
+    </div>
+    <div class="card">
+      <span class="lvl lvl-loc">Lokal: Gemeinde</span>
+      <h2>Saint-Tropez — Südufer (AP 297/2026 vom 24.07.2026)</h2>
+      <figure id="fig-st-uebersicht" style="margin:8px 0 4px">
+        <img src="plaene/st-uebersicht.jpg" alt="Übersicht: gelbe 5-kn-Linie + rotes 300-m-Band, Strände 1–7 (Annexe I)" loading="lazy" style="aspect-ratio:1112/712;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Übersicht: gelbe 5-kn-Linie + rotes 300-m-Band, Strände 1–7 (Annexe I)</figcaption>
+      </figure>
+      <figure id="fig-st-5kn-zone" style="margin:8px 0 4px">
+        <img src="plaene/st-5kn-zone.jpg" alt="5-kn-Zone Rabiou–Capon + AOT-Coffre «MY SYMPHONY» (Annexe II)" loading="lazy" style="aspect-ratio:1088/712;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">5-kn-Zone Rabiou–Capon + AOT-Coffre «MY SYMPHONY» (Annexe II)</figcaption>
+      </figure>
+      <div class="loc" id="loc-9">
+      <h3><span class="chip b">9</span> La Bouillabaisse / Le Pilon</h3>
+      <ul>
+        <li>Kanäle 1 (20×300 m) und 6 (25×300 m — <b>einziger Jetski-Kanal der Gemeinde</b>); 200 m breiter Hafen-Zufahrtskanal 8.</li>
+        <li>Ankerverbotszonen ZIM 5 und 7 westlich des Hafens; Bojenfeld AOT 1.</li>
+      </ul>
+      <figure style="margin:8px 0 4px">
+        <img src="plaene/st-bouillabaisse.jpg" alt="Annexe III" loading="lazy" style="aspect-ratio:1088/696;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Annexe III</figcaption>
+      </figure>
+      </div>
+      <div class="loc" id="loc-10">
+      <h3><span class="chip b">10</span> Baie des Canoubiers</h3>
+      <ul>
+        <li><b>Ganze Bucht 5-kn-Zone</b>, weit über die 300 m hinaus (gelbe Bojenlinie — siehe Tempo-Tabelle unten).</li>
+        <li>Rettungskanal 16, Zufahrtskanäle 20 + 23; vier ZIEM (15/18/21/24).</li>
+        <li><b>Drei Mouillage-Zonen für Boote unter 24 m</b> (19/22/25) — Zufahrt nur durch die angrenzenden Kanäle, innen max. 5 kn.</li>
+        <li>Bojenfelder AOT 3 (Paressouso) und 4 (Canebiers).</li>
+      </ul>
+      <figure style="margin:8px 0 4px">
+        <img src="plaene/st-canebiers.jpg" alt="Annexe VI" loading="lazy" style="aspect-ratio:1184/672;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Annexe VI</figcaption>
+      </figure>
+      </div>
+      <div class="loc" id="loc-11">
+      <h3><span class="chip b">11</span> La Ponche / La Fontanette</h3>
+      <ul>
+        <li>Rettungskanal 11 (10×50 m) östlich der Pointe Pesquière — freihalten.</li>
+      </ul>
+      <figure style="margin:8px 0 4px">
+        <img src="plaene/st-ponche.jpg" alt="Annexe IV" loading="lazy" style="aspect-ratio:1177/696;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Annexe IV</figcaption>
+      </figure>
+      </div>
+      <div class="loc" id="loc-12">
+      <h3><span class="chip b">12</span> Les Graniers</h3>
+      <ul>
+        <li>Badezonen ZRUB 12/13; Bojenfeld AOT 2 beidseits der 300-m-Linie.</li>
+      </ul>
+      <figure style="margin:8px 0 4px">
+        <img src="plaene/st-graniers.jpg" alt="Annexe V" loading="lazy" style="aspect-ratio:1171/672;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Annexe V</figcaption>
+      </figure>
+      </div>
+      <div class="loc" id="loc-13">
+      <h3><span class="chip b">13</span> Cabine de Bain</h3>
+      <ul>
+        <li>Badezone ZRUB 26; Bojenfeld AOT 6 seewärts der 300-m-Linie.</li>
+      </ul>
+      <figure style="margin:8px 0 4px">
+        <img src="plaene/st-cabine-de-bain.jpg" alt="Annexe VII" loading="lazy" style="aspect-ratio:1184/712;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Annexe VII</figcaption>
+      </figure>
+      </div>
+      <div class="loc" id="loc-14">
+      <h3><span class="chip b">14</span> La Moutte</h3>
+      <ul>
+        <li>Kanal 28 (20×110 m) zwischen den Badezonen ZRUB 27 und 29; Bojenfeld AOT 7.</li>
+      </ul>
+      <figure style="margin:8px 0 4px">
+        <img src="plaene/st-moutte.jpg" alt="Annexe VIII" loading="lazy" style="aspect-ratio:1176/712;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Annexe VIII</figcaption>
+      </figure>
+      </div>
+      <div class="loc" id="loc-15">
+      <h3><span class="chip b">15</span> Les Salins</h3>
+      <ul>
+        <li>Kanal 30 (15×150 m) + Rettungskanal 32; Bojenfeld AOT 8 nördlich.</li>
+      </ul>
+      <figure style="margin:8px 0 4px">
+        <img src="plaene/st-salins.jpg" alt="Annexe IX" loading="lazy" style="aspect-ratio:1112/568;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Annexe IX</figcaption>
+      </figure>
+      </div>
+      <span class="src">Quelle: AP 297/2026, Art. 1–8 + Annexes I–IX · ZIM: AP 21/2005</span>
+    </div>
+    <div class="card">
+      <h2>Weitere Sperrzonen &amp; Hafenzufahrten</h2>
+      <ul>
+        <li><b>D Gassin (Marine-Werft):</b> Sperrzone Navigation/Ankern/Tauchen (AP 45/2004) — Lage ungefähr, kein Ortsplan publiziert.</li>
+        <li><b>E Abwasserleitung St-Tropez:</b> Anker- und Schleppverbot um den Émissaire (AP 977/1972) — Lage ungefähr.</li>
+      </ul>
+      <h3>Hafenzufahrten Port Grimaud &amp; Marines de Cogolin</h3>
+      <ul>
+        <li>Vor beiden Einfahrten: <b>rot/grünes Lateralpaar</b> plus <b>Gefahrentonne</b> (Untiefen vor der Giscle-Mündung) — Einfahrt <b>zwischen Rot und Grün</b>, von See kommend Rot links.</li>
+        <li>Gefahrentonne je nach Toppzeichen lesen (siehe Bojen-Tab); im Zweifel aussen herum.</li>
+        <li>Seezeichen nach Erlass vom 30.11.2017 (DIRM/Phares et Balises) — verbindliche Darstellung: SHOM-Karte 7407, data.shom.fr, Nav&amp;Co.</li>
+      </ul>
+    </div>
+
+
+    <div class="card">
+      <h2>Amtliche Detailkarten (PDF, online)</h2>
+      <p>Die exakten Zonen-Karten pro Strand stecken als Anhänge in den Erlassen — direkt vom iPhone aus zu öffnen und z.B. in «Bücher» zu sichern:</p>
+      <ul>
+        <li><a href="https://www.premar-mediterranee.gouv.fr/uploads/mediterranee/arretes/9139f157162ca051ac88e15cfe6976e1.pdf">Sainte-Maxime — AP 168/2026</a> (Anhänge I–VIII: Übersichtsplan + alle Strände)</li>
+        <li><a href="https://www.premar-mediterranee.gouv.fr/uploads/mediterranee/arretes/3d4557f4a25f9c8c850d46c54f0e92e4.pdf">Grimaud — AP 242/2024</a> (Anhänge I–VI)</li>
+        <li><a href="https://www.premar-mediterranee.gouv.fr/uploads/mediterranee/arretes/20a9320bad2af01f086bafd4c6b40365.pdf">Saint-Tropez — AP 297/2026 vom 24.07.2026 (AKTUELL)</a> — neue Canoubiers-Zonen</li>
+        <li><a href="https://www.golfe-sainttropez.fr/vivre-ici/espaces-maritimes/">golfe-sainttropez.fr → Espaces maritimes</a> (jeweils aktuellste Erlasse aller Golf-Gemeinden)</li>
+      </ul>
+      <p><small>Vor Saisonstart prüfen, ob neue Jahres-Erlasse erschienen sind.</small></p>
+    </div>
+
+
+
+    <div class="card">
+      <h2>Aktuelle, zoombare Karten (online)</h2>
+      <ul>
+        <li><b>DONIA</b> (App, gratis): Posidonia-/Sandflächen live — amtlich empfohlen zum Ankerplatz finden.</li>
+        <li><b>Nav&amp;Co</b> (App, gratis, SHOM/OFB): Seekarte mit Regulierungszonen.</li>
+        <li><b>data.shom.fr</b>: amtliche Seekarten-Layer inkl. Balisage.</li>
+        <li><b>premar-mediterranee.gouv.fr</b> → Recueil: gültige Erlasse mit Detailkarten pro Strand (Anhänge).</li>
+        <li><b>golfe-sainttropez.fr</b> → Espaces maritimes: Balisage-Erlasse aller Golf-Gemeinden als PDF.</li>
+      </ul>
+      <p><small>Diese Links brauchen Internet — die Karte oben funktioniert offline. Grossyacht-Zonen (≥ 24 m) für den ganzen Sektor: siehe AP 248/2020.</small></p>
+    </div>
+
+
+    <div class="card">
+      <h2>Glossar — französische Abkürzungen &amp; Begriffe</h2>
+      <table>
+        <tr><th>Begriff</th><th>Ausgeschrieben</th><th>Bedeutung</th></tr>
+        <tr><td><b>ZIEM</b></td><td>zone interdite aux embarcations motorisées ou à moteur</td><td>Verbotszone für alles mit Motor — auch wenn der Motor nur montiert und ausgeschaltet ist</td></tr>
+        <tr><td><b>ZIM</b></td><td>zone interdite au mouillage</td><td>Ankerverbotszone</td></tr>
+        <tr><td><b>ZRUB</b></td><td>zone réservée uniquement à la baignade</td><td>Reine Badezone — für alle Boote gesperrt</td></tr>
+        <tr><td><b>ZMP</b></td><td>zone de mouillage propre</td><td>Ankerzone nur für Boote mit Fäkalientank</td></tr>
+        <tr><td><b>ZMEL</b></td><td>zone de mouillages et d'équipements légers</td><td>Bewirtschaftetes Bojenfeld (Betreiber, oft gebührenpflichtig)</td></tr>
+        <tr><td><b>AOT</b></td><td>autorisation d'occupation temporaire</td><td>Staatliche Nutzungsbewilligung — privates Bojenfeld, Festmachen nur mit Erlaubnis</td></tr>
+        <tr><td><b>Chenal (traversier)</b></td><td>—</td><td>Zufahrtskanal zwischen Strand und offenem Wasser: max. 5 kn, direkt durchfahren, kein Stopp</td></tr>
+        <tr><td><b>Plan de balisage</b></td><td>—</td><td>Jährlicher Bojenplan einer Gemeinde (Erlasse von Präfekt + Bürgermeister)</td></tr>
+        <tr><td><b>Bande des 300 m</b></td><td>bande littorale des 300 mètres</td><td>300-m-Küstenzone — überall max. 5 kn</td></tr>
+        <tr><td><b>AP</b></td><td>arrêté préfectoral</td><td>Erlass des Präfekten (hier meist: Préfet maritime in Toulon)</td></tr>
+        <tr><td><b>Premar</b></td><td>préfecture maritime de la Méditerranée</td><td>Seebehörde für die ganze französische Mittelmeerküste</td></tr>
+        <tr><td><b>DDTM</b></td><td>direction départementale des territoires et de la mer</td><td>Departements-Behörde (Var) — vergibt u.a. die AOT-Bojenfelder</td></tr>
+        <tr><td><b>CROSS MED</b></td><td>centre régional opérationnel de surveillance et de sauvetage</td><td>Seenotleitstelle Mittelmeer — Tel. 196, VHF 16</td></tr>
+        <tr><td><b>Sémaphore</b></td><td>—</td><td>Küstenwachstation der Marine (überwacht u.a. Ankerlieger)</td></tr>
+        <tr><td><b>VNM</b></td><td>véhicule nautique à moteur</td><td>Jetski/Wassermotorrad</td></tr>
+        <tr><td><b>ESH</b></td><td>engin à sustentation hydropropulsé</td><td>eFoil, Flyboard und Ähnliches</td></tr>
+        <tr><td><b>RIPAM</b></td><td>règlement international pour prévenir les abordages en mer</td><td>Die internationalen Kollisionsverhütungsregeln (KVR)</td></tr>
+        <tr><td><b>Division 240</b></td><td>—</td><td>Französische Ausrüstungsvorschrift für Sportboote unter 24 m</td></tr>
+        <tr><td><b>Dotation</b> (basique/côtière)</td><td>dotation d'armement</td><td>Vorgeschriebene Ausrüstungs-Grundausstattung je Zone gemäss Division 240</td></tr>
+        <tr><td><b>Posidonie</b></td><td>posidonia oceanica</td><td>Neptungras — geschützte Seegraswiesen, Ankerverbot</td></tr>
+        <tr><td><b>SHOM</b></td><td>service hydrographique et océanographique de la marine</td><td>Französisches Seekartenamt</td></tr>
+        <tr><td><b>SFkl. / Fkl. / Blk.</b></td><td>—</td><td>Deutsche Kennungs-Kürzel der BSH-Tafeln: schnelles Funkelfeuer (int. VQ), Funkelfeuer (Q), Blink (LFl)</td></tr>
+      </table>
+    </div>
+
+  </section>
+
+  <section id="panel-ankern" class="tab-panel">
+
+    <div class="card">
+      <span class="lvl lvl-med">Ganze frz. Mittelmeerküste</span>
+      <h2>Die Grundregel: nur auf Sand ankern</h2>
+      <p>Die <b>Posidonia-Seegraswiesen</b> sind eine geschützte Art und bedecken weite Teile des Golfs. Der Rahmenerlass 123/2019 verbietet das Ankern überall dort, wo geschützte Meerespflanzen beschädigt werden können — <b>für jede Bootsgrösse</b>, auch für dein 7-m-Boot.</p>
+      <div class="callout ok">
+        <b>So erkennst du den Grund:</b> Helle, sandfarbene Flächen = Sand → ankern OK. Dunkle Flecken = Seegras oder Fels → nicht ankern. Im Zweifel Blick über die Bordwand oder kurz mit der Badebrille prüfen, bevor der Anker fällt. Die Gratis-App <b>DONIA</b> zeigt die Sandflächen live.
+      </div>
+      <ul>
+        <li><b>Begriff:</b> «Mouillage» = Anker am Grund. Festmachen an Boje/Coffre gilt als «Arrêt» — andere Regeln.</li>
+        <li><b>Strafrahmen:</b> bis 1 Jahr Haft und 150'000 € (Art. L.5242-2 Code des transports); bei Posidonia-Schäden bis 3 Jahre und 150'000 € (Art. L.415-3 Code de l'environnement). Kontrollen im Golf sind Alltag.</li>
+      </ul>
+      <span class="src">Quelle: AP 123/2019 (Rahmen Mouillage, ganze Küste)</span>
+    </div>
+
+    <div class="card">
+      <span class="lvl lvl-med">Ganze frz. Mittelmeerküste</span>
+      <h2>Ankerdauer: max. 72 Stunden</h2>
+      <ul>
+        <li>Am selben Platz darfst du <b>72 Stunden</b> ankern (entspricht einer verlässlichen Wetterprognose).</li>
+        <li><b>Ohne AIS</b> (Boote unter 24 m): danach weiterziehen — und <b>nicht sofort wieder im 500-m-Umkreis</b> des alten Platzes ankern.</li>
+        <li><b>Mit AIS:</b> Verlängerung in eigener Verantwortung um jeweils 72 h möglich, solange die Behörde nichts anderes anordnet.</li>
+        <li>Ausnahmen: Schlechtwetter, Notfall, Seenothilfe.</li>
+        <li><b>Ankerwache:</b> Auch vor Anker gilt KVR-Regel 5 — ständige Ausguck-/Höraufsicht (Abstände, Slippen des Ankers, Wassereinbruch, Feuer). Wer ankert, muss für Sémaphore/CROSS <b>über VHF oder Telefon erreichbar</b> sein.</li>
+      </ul>
+      <span class="src">Quellen: AP 77/2025 vom 15.04.2025 (Ankerdauer, Art. 2 + 4) · AP 123/2019 (Erreichbarkeit)</span>
+    </div>
+
+    <div class="card">
+      <span class="lvl lvl-loc">Lokal: Golf</span>
+      <h2>Wo ankern im Golf — die legalen Optionen</h2>
+      <h3>Baie des Canoubiers: drei offizielle Anker-Zonen für Boote unter 24 m</h3>
+      <ul>
+        <li>Zonen <b>19, 22 und 25</b> («Mouillage autorisé», Anker-Symbol auf dem Plan) — Zufahrt <b>nur durch die angrenzenden Kanäle 20/23</b>, innen max. 5 kn, nur zum Anker-Setzen/-Aufnehmen manövrieren.</li>
+        <li>Die ganze Bucht ist 5-kn-Zone; ausserhalb der ZIEM/ZRUB darf zusätzlich frei geankert werden — <b>nur auf Sand</b>.</li>
+      </ul>
+      <figure style="margin:8px 0 4px">
+        <img src="plaene/st-canebiers.jpg" alt="Baie des Canoubiers — Anker-Zonen 19/22/25 (Anker-Symbol), Kanäle und ZIEM (AP 297/2026, Annexe VI)" loading="lazy" style="aspect-ratio:1184/672;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Baie des Canoubiers — Anker-Zonen 19/22/25 (Anker-Symbol), Kanäle und ZIEM (AP 297/2026, Annexe VI)</figcaption>
+      </figure>
+      <h3>Bojenfelder (AOT) — nicht einfach belegen!</h3>
+      <ul>
+        <li>Grimaud (Zonen 1–6) und St-Tropez (AOT DDTM 1–8) haben private Bojenfelder: Festmachen <b>nur mit Bewilligung</b> des Var-Präfekten bzw. des Betreibers. Eine frei scheinende Boje ist keine Einladung.</li>
+        <li>Innerhalb der Felder gilt 5 kn; Ankern zwischen den Bojen ist tabu (Kettensalat).</li>
+      </ul>
+      <figure style="margin:8px 0 4px">
+        <img src="plaene/gr-mures-1.jpg" alt="Grimaud/Les Mûres — Bojenfeld «Zone de mouillage n°1/1bis» seeseitig der Badezonen (AP 242/2024, Annexe II)" loading="lazy" style="aspect-ratio:1120/808;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Grimaud/Les Mûres — Bojenfeld «Zone de mouillage n°1/1bis» seeseitig der Badezonen (AP 242/2024, Annexe II)</figcaption>
+      </figure>
+      <h3>Wo Ankern verboten ist</h3>
+      <ul>
+        <li><b>ZIM</b> (Ankerverbotszonen): westlich des Hafens St-Tropez (Zonen 5 + 7, siehe Plan) und gemäss AP 21/2005.</li>
+        <li>In <b>ZIEM, Badezonen (ZRUB) und allen Kanälen</b>; an Balisage-Bojen festmachen ist verboten.</li>
+        <li>In <b>Hafenzufahrten</b> (St-Tropez, Ste-Maxime, Port Grimaud, Cogolin) und der Fährlinie.</li>
+        <li>Um die <b>Insel Sardinaux</b> (Sperrzone bis 15.09.2026, AP 46/2026), an der <b>Gassin-Werft</b> (AP 45/2004) und um den <b>Émissaire</b> St-Tropez (AP 977/1972).</li>
+        <li>Auf <b>Kabeltrassen</b> — Seekarte (SHOM 7407) prüfen.</li>
+        <li>Das <b>Grossyacht-Ankerfeld</b> mitten im Golf meiden — dort schwoien 45-m-Yachten an langen Ketten.</li>
+      </ul>
+      <figure style="margin:8px 0 4px">
+        <img src="plaene/st-bouillabaisse.jpg" alt="ZIM 5 + 7 westlich des Hafens St-Tropez — Ankerverbot (AP 297/2026, Annexe III)" loading="lazy" style="aspect-ratio:1088/696;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">ZIM 5 + 7 westlich des Hafens St-Tropez — Ankerverbot (AP 297/2026, Annexe III)</figcaption>
+      </figure>
+      <span class="src">Quellen: AP 297/2026 (Canoubiers-Zonen, ZIM) · AP 242/2024 (Grimaud AOT) · AP 46/2026 · AP 21/2005 · AP 45/2004 · AP 977/1972</span>
+    </div>
+
+    <div class="card">
+      <h2>Richtig ankern — Praxis</h2>
+      <ul>
+        <li>Kettenlänge <b>3–5× Wassertiefe</b>; Schwoikreis zu Nachbarn und Zonengrenzen prüfen.</li>
+        <li>Rückwärts eingraben, Ankerlage kontrollieren (Peilung an Land oder GPS-Ankeralarm).</li>
+        <li><b>Ankerball</b> am Tag, <b>Ankerlicht</b> (weisses Rundumlicht) in der Nacht.</li>
+        <li>Beim Ankerauf: Kette <b>senkrecht einholen</b>, nicht über den Grund schleifen (Posidonia!).</li>
+        <li><b>Wind im Golf:</b> Bei Mistral (W/NW) wird das Nordufer (Ste-Maxime-Seite) ruppig, bei Ostwind die Canoubiers-Bucht — Ankerplatz nach Prognose wählen, im Zweifel in den Hafen.</li>
+        <li>Hochsommer: beliebte Plätze (Canoubiers!) früh anlaufen; mit Kontrollen rechnen.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Umwelt</h2>
+      <ul>
+        <li>Der Golf liegt im Walschutzgebiet <b>Pélagos</b>: min. 100 m Abstand zu Delfinen/Walen, nicht verfolgen.</li>
+        <li>Kein Abwasser und kein Abfall über Bord — Fäkalientank im Hafen abpumpen.</li>
+        <li>Ausserhalb des Golfs (z.B. Pampelonne) gelten eigene Anker-Regelungen — vor Ausflügen separat prüfen.</li>
+      </ul>
+    </div>
+
+  </section>
+  <section id="panel-ausruestung" class="tab-panel">
+
+    <div class="card">
+      <span class="lvl lvl-fr">Frankreich national</span>
+      <h2>Pflichtausrüstung nach Distanz zum Schutzort (Division 240)</h2>
+      <p>Massgebend ist die Distanz zu einem <b>«abri»</b> (Schutzort) — <b>nicht</b> zur Küste. Ein abri ist ein Ort, wo Boot und Crew bei den aktuellen Bedingungen real Schutz finden und ohne Hilfe wieder auslaufen können (Hafen, geschützte Bucht).</p>
+      <div class="callout info" style="border-color: var(--amber); background:#fdf6dd">
+        <b>Für wen gilt die Division 240?</b> Für Boote unter <b>französischer Flagge</b> (unter 24 m) — und für ausländisch beflaggte Boote, deren Eigner den Hauptwohnsitz in Frankreich hat. Für ein Schweizer Boot mit Wohnsitz Schweiz gelten formal die Schweizer Ausrüstungsregeln. Die Division 240 ist aber der Massstab der frz. Kontrolleure und als Sicherheitsstandard vor Ort dringend zu empfehlen.
+      </div>
+      <table>
+        <tr><th>Zone</th><th>Distanz</th><th>Typische Fahrt im Golf</th></tr>
+        <tr><td><b>Basique</b></td><td>&lt; 2 sm</td><td><b>Der ganze Golf</b> — überall ist ein Schutzort in unter 2 sm erreichbar</td></tr>
+        <tr><td><b>Côtier</b></td><td>2–6 sm</td><td>Nur bei Ausflügen aus dem Golf hinaus (Küste entlang)</td></tr>
+      </table>
+      <div class="callout info">
+        <b>Update 2026</b> (Arrêté vom 21. Mai 2026): keine neuen Materialpflichten. Westen heissen neu «Niveau 50/100/150» statt «50N/100N/150N»; Kompassbeleuchtung darf extern sein. Fallschirmraketen und Rauchsignale sind <b>nicht mehr</b> Pflicht — die 3 roten Handfackeln (côtier) bleiben.
+      </div>
+      <p><small>Der Bootsführer (chef de bord) ist verantwortlich, dass alles vorhanden, zugänglich und gültig ist. Checkliste antippen zum Abhaken — bleibt gespeichert.</small></p>
+      <span class="src">Quellen: Division 240 (Règlement zum Arrêté vom 23.11.1987, zuletzt geändert per Arrêté vom 21.05.2026) · Amtliche Fiche «L'équipement de sécurité des navires de plaisance» (mer.gouv.fr)</span>
+    </div>
+
+    <div class="card">
+      <span class="badge gruen">&lt; 2 sm</span>
+      <h2>Dotation basique</h2>
+      <div id="chk-basique"></div>
+    </div>
+
+    <div class="card">
+      <span class="badge gelb">2–6 sm</span>
+      <h2>Dotation côtière <small style="font-weight:400">(zusätzlich zur basique)</small></h2>
+      <div id="chk-cotier"></div>
+      <button class="reset-btn" id="reset-checks">Alle Haken zurücksetzen</button>
+    </div>
+
+    <div class="card">
+      <h2>Weiter als 6 sm hinaus?</h2>
+      <p>Ab 6 sm von einem Schutzort gilt zusätzlich die <b>Dotation semi-hauturière</b> (u.a. feste VHF, Rettungsinsel, Westen Niveau 150). Das liegt ausserhalb des Reviers dieser App — vor einem solchen Törn die Division 240 separat prüfen.</p>
+    </div>
+
+    <div class="card">
+      <h2>Rettungswesten richtig wählen</h2>
+      <table>
+        <tr><th>Niveau</th><th>Einsatz</th></tr>
+        <tr><td><b>50</b></td><td>Minimum für Erwachsene in der Basique-Zone (Schwimmhilfe)</td></tr>
+        <tr><td><b>100</b></td><td>Einfache Wahl bis 6 sm; <b>Pflicht für Kinder ≤ 30 kg</b> — immer, in jeder Zone</td></tr>
+        <tr><td><b>150</b></td><td>Erst ab 6 sm von einem Schutzort Pflicht — im Golf nicht nötig</td></tr>
+      </table>
+      <p><small>Westen müssen der Körpergrösse entsprechen, griffbereit und gewartet sein (Patrone/Datum bei Automatikwesten prüfen).</small></p>
+    </div>
+
+  </section>
+  <section id="panel-notfall" class="tab-panel">
+
+    <a class="tel-btn" href="tel:196">
+      <span class="nr">196</span>
+      <span>Seenotruf CROSS MED<small>Gratis, 24/7, vom Handy — koordiniert die Rettung im Mittelmeer</small></span>
+    </a>
+    <a class="tel-btn blau" href="tel:112">
+      <span class="nr">112</span>
+      <span>Allgemeiner Notruf<small>Wenn 196 nicht erreichbar ist</small></span>
+    </a>
+
+    <div class="card">
+      <span class="badge rot">Funk</span>
+      <h2>VHF Kanal 16</h2>
+      <ul>
+        <li>Kanal 16 = internationaler Not- und Anrufkanal, direkte Verbindung zum <b>CROSS MED</b> (La Garde/Toulon).</li>
+        <li>Funk ist dem Handy <b>vorzuziehen</b>: funktioniert ohne Netz, alle Schiffe in der Nähe hören mit.</li>
+        <li>Nach dem Notruf auf 16 bleiben — der CROSS weist ggf. einen Arbeitskanal zu.</li>
+      </ul>
+      <h3>MAYDAY-Schema (Lebensgefahr)</h3>
+      <div class="callout">
+        <b>MAYDAY, MAYDAY, MAYDAY</b><br>
+        Hier ist <i>[Bootsname]</i>, <i>[Bootsname]</i>, <i>[Bootsname]</i><br>
+        MAYDAY <i>[Bootsname]</i><br>
+        Position: <i>[GPS oder Beschreibung, z.B. «1 sm nördlich Cap de Saint-Tropez»]</i><br>
+        Art des Notfalls: <i>[Wassereinbruch / Feuer / Person über Bord …]</i><br>
+        Personen an Bord: <i>[Anzahl]</i><br>
+        OVER
+      </div>
+      <p><small>Bei dringlicher Lage ohne Lebensgefahr: <b>PAN-PAN</b> (3×) statt MAYDAY. Auf Französisch oder Englisch funken; die CROSS-Operatoren sprechen Englisch.</small></p>
+    </div>
+
+    <div class="card">
+      <h2>Person über Bord — Sofortmassnahmen</h2>
+      <ul>
+        <li><b>«Mann über Bord!»</b> rufen, sofort Rettungsmittel (Ring/Kissen) nachwerfen.</li>
+        <li>Eine Person zeigt <b>ununterbrochen</b> auf die Person im Wasser.</li>
+        <li>MOB-Taste am GPS drücken, Fahrt rausnehmen, in Wind/Wellen aufdrehen.</li>
+        <li>Annäherung gegen Wind/Welle, <b>Motor in Neutral</b> beim Bergen (Propeller!).</li>
+        <li>Wenn Bergung nicht sofort gelingt: <b>196 / Kanal 16</b>.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Wichtige Kontakte im Golf</h2>
+      <table>
+        <tr><th>Stelle</th><th>Info</th></tr>
+        <tr><td>Seenotruf CROSS MED</td><td>Tel. 196 · VHF 16</td></tr>
+        <tr><td>Wetter (Météo France marine)</td><td>VHF-Wetterberichte via CROSS; App/Web: meteofrance.com (Bulletin côte)</td></tr>
+        <tr><td>Port de Saint-Tropez</td><td>VHF 9 · +33 4 94 56 68 70</td></tr>
+        <tr><td>Port de Sainte-Maxime</td><td>VHF 9 · +33 4 94 96 74 25</td></tr>
+        <tr><td>Port Grimaud</td><td>VHF 9 · +33 4 94 56 29 88</td></tr>
+        <tr><td>Ports de Cogolin (Marines)</td><td>VHF 9 · +33 4 94 56 07 66</td></tr>
+        <tr><td>SNSM Saint-Tropez (Seenotretter)</td><td>Alarmierung immer über CROSS 196</td></tr>
+      </table>
+      <p><small>Hafen-Telefonnummern vor der Saison verifizieren — Nummern können ändern. VHF 9 ist der übliche Hafenkanal.</small></p>
+    </div>
+
+    <div class="card">
+      <h2>Vor dem Auslaufen — 60-Sekunden-Check</h2>
+      <ul>
+        <li>Wetterbericht geprüft? (Mistral-Warnung = Fahrt absagen)</li>
+        <li>Treibstoff: 1/3 hin, 1/3 zurück, 1/3 Reserve</li>
+        <li>Jemandem an Land Route + Rückkehrzeit gemeldet?</li>
+        <li>Handy geladen + wasserdicht verpackt, Westen an Bord und passend</li>
+        <li>Totmannschalter (coupe-circuit) am Handgelenk befestigt</li>
+      </ul>
+    </div>
+
+  </section>
+
+  <footer>
+    <b>Amtliche Quellen dieser Zusammenstellung (Stand Juli 2026):</b><br>
+    KVR/RIPAM (London 20.10.1972, Décret n°77-733) ·
+    Division 240 (Arrêté 23.11.1987 i.d.F. vom 21.05.2026) und Fiche mer.gouv.fr ·
+    AP n°109/2024 (Schifffahrt/Aktivitäten, ganze frz. Mittelmeerküste) ·
+    AP n°123/2019 (Anker-Rahmen) ·
+    AP n°11/95 (Tempo im Golf) · AP n°77/2025 (Ankerdauer) · Balisage-Erlasse der Golf-Gemeinden (jährlich) ·
+    Décret n°2026-434 (Alkohol/Geschwindigkeit).<br><br>
+    Private Zusammenstellung ohne Gewähr — massgebend sind allein die amtlichen Texte.
+    Vor Saisonstart aktuelle Erlasse und Plans de balisage prüfen: premar-mediterranee.gouv.fr
+  </footer>
+</main>
+
+<nav id="tabbar"></nav>
+
+<script>
+// ---------- Tab-Navigation ----------
+const TABS = [
+  { id: 'regeln',      label: 'Regeln',    icon: '<path d="M12 3v18M5 7l7-4 7 4M4 21h16M7 7v10m10-10v10"/>' },
+  { id: 'bojen',       label: 'Bojen',     icon: '<circle cx="12" cy="10" r="5"/><path d="M12 15v4m-4 2h8M12 5V2"/>' },
+  { id: 'karte',       label: 'Karte',     icon: '<path d="M9 4 L3 6 v14 l6 -2 l6 2 l6 -2 V4 l-6 2 z M9 4 v14 M15 6 v14"/>' },
+  { id: 'ankern',      label: 'Ankern',    icon: '<circle cx="12" cy="5" r="2.5"/><path d="M12 7.5V21m0 0c-4.5 0-8-3-8.5-7M12 21c4.5 0 8-3 8.5-7M8 11h8"/>' },
+  { id: 'ausruestung', label: 'Ausrüstung',icon: '<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="3.5"/><path d="M12 3.5v5m0 7v5M3.5 12h5m7 0h5"/>' },
+  { id: 'notfall',     label: 'Notfall',   icon: '<path d="M12 4l9 16H3z"/><path d="M12 10v5m0 2.2v.3"/>' }
+];
+const tabbar = document.getElementById('tabbar');
+TABS.forEach((t, i) => {
+  const b = document.createElement('button');
+  b.innerHTML = '<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">' + t.icon + '</svg>' + t.label;
+  b.onclick = () => showTab(t.id);
+  b.id = 'tabbtn-' + t.id;
+  tabbar.appendChild(b);
+});
+function showTab(id) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  document.getElementById('tabbtn-' + id).classList.add('active');
+  window.scrollTo({ top: 0 });
+  try { localStorage.setItem('lastTab', id); } catch (e) {}
+}
+showTab((() => { try { return localStorage.getItem('lastTab') || 'regeln'; } catch (e) { return 'regeln'; } })());
+
+// ---------- Ausrüstungs-Checklisten (Division 240) ----------
+const CHECKLISTS = {
+  basique: [
+    'Rettungsweste/Schwimmhilfe pro Person (Erw. min. Niveau 50, griffbereit)',
+    'Kinder ≤ 30 kg: Weste Niveau 100',
+    'Wasserdichtes Licht (min. 6 h Autonomie) — pro Person oder an Bord',
+    'Extincteur/Feuerlöscher gemäss Herstellerhandbuch',
+    'Lenzmittel (Schöpfer, Eimer oder Handpumpe) bei nicht selbstlenzenden Booten',
+    'Schleppleine + fester Belegpunkt',
+    'Ankergeschirr (Pflicht ab 250 kg Leermasse des Boots)',
+    'Mittel zur Kenntnis der Tagesgezeiten (formal gelistet; im Mittelmeer praktisch ohne Belang)'
+  ],
+  cotier: [
+    'Rettungsring / Hufeisen (dispositif homme à la mer)',
+    '3 rote Handfackeln (Datum gültig!)',
+    'Wasserdichter Magnetkompass oder wasserdichtes GPS',
+    'Offizielle Seekarte(n) des Reviers (Papier oder Gerät mit Offline-Karte)',
+    'KVR/RIPAM-Zusammenfassung an Bord',
+    'Beschreibung des Betonnungssystems (Balisage) des Reviers'
+  ],
+};
+function renderChecklist(key, targetId) {
+  const el = document.getElementById(targetId);
+  let saved = {};
+  try { saved = JSON.parse(localStorage.getItem('chk-' + key) || '{}'); } catch (e) {}
+  el.innerHTML = CHECKLISTS[key].map((item, i) => {
+    const id = key + '-' + i;
+    return '<div class="check"><input type="checkbox" id="' + id + '" ' + (saved[i] ? 'checked' : '') +
+      ' onchange="saveCheck(\'' + key + '\',' + i + ',this.checked)"><label for="' + id + '">' + item + '</label></div>';
+  }).join('');
+}
+function saveCheck(key, i, val) {
+  try {
+    const saved = JSON.parse(localStorage.getItem('chk-' + key) || '{}');
+    saved[i] = val;
+    localStorage.setItem('chk-' + key, JSON.stringify(saved));
+  } catch (e) {}
+}
+renderChecklist('basique', 'chk-basique');
+renderChecklist('cotier', 'chk-cotier');
+document.getElementById('reset-checks').onclick = () => {
+  ['basique', 'cotier'].forEach(k => { try { localStorage.removeItem('chk-' + k); } catch (e) {} });
+  renderChecklist('basique', 'chk-basique');
+  renderChecklist('cotier', 'chk-cotier');
+  };
+
+// ---------- Satellitenkarte (IGN Géoplateforme Orthophotos, WMTS/WebMercator) ----------
+const SAT_BBOX = { latMin: 43.245, latMax: 43.345, lonMin: 6.560, lonMax: 6.710 };
+const SAT_MARKERS = [
+  // [Label, Typ b=Badezone/Kanal r=Verbot h=Hafen, Lat, Lon, Beschreibung, Ziel-Abschnitt]
+  ['1','b',43.3006,6.6259,'La Croisette','loc-1'],
+  ['2','b',43.3067,6.6415,'Centre-Ville / Hafen Ste-Maxime','loc-2'],
+  ['3','b',43.3209,6.6651,'La Nartelle','loc-3'],
+  ['4','b',43.3415,6.6810,'La Garonnette','loc-4'],
+  ['5','b',43.2775,6.5825,'Port-Grimaud-Strand','loc-5'],
+  ['6','b',43.2815,6.5843,'Saint-Pons / Les Mûres / Gros Pin','loc-6'],
+  ['7','b',43.2866,6.6000,'Beauvallon / Vieux Moulin','loc-7'],
+  ['8','b',43.2925,6.6110,'Guerrevieille / Les Cigales','loc-8'],
+  ['9','b',43.2643,6.6252,'La Bouillabaisse / Le Pilon','loc-9'],
+  ['10','b',43.2700,6.6655,'Baie des Canoubiers (5-kn-Zone!)','loc-10'],
+  ['11','b',43.2733,6.6420,'La Ponche / La Fontanette','loc-11'],
+  ['12','b',43.2705,6.6480,'Les Graniers','loc-12'],
+  ['13','b',43.2715,6.6740,'Cabine de Bain','loc-13'],
+  ['14','b',43.2680,6.6800,'La Moutte','loc-14'],
+  ['15','b',43.2610,6.6860,'Les Salins','loc-15'],
+  ['A','r',43.3133,6.6581,'ZIEM La Madrague','loc-A'],
+  ['B','r',43.3176,6.6687,'ZIEM Sardinaux + Insel-Sperrzone','loc-B'],
+  ['C','r',43.3323,6.6689,'ZIEM Les Éléphants','loc-C'],
+  ['D','r',43.2650,6.5950,'Sperrzone Gassin-Werft (AP 45/2004, Lage ungefähr)',null],
+  ['E','r',43.2660,6.6300,'Ankerverbot Émissaire (AP 977/1972, Lage ungefähr)',null],
+  ['','h',43.2727,6.6391,'Hafen Saint-Tropez (VHF 9)',null],
+  ['','h',43.3067,6.6403,'Hafen Sainte-Maxime (VHF 9)',null],
+  ['','h',43.2750,6.5800,'Port Grimaud (VHF 9)',null],
+  ['','h',43.2655,6.5870,'Marines de Cogolin (VHF 9)',null]
+];
+// WebMercator: Grad -> globale Pixel bei Zoom z
+function mercPx(lat, lon, z) {
+  const n = 256 * Math.pow(2, z);
+  const x = (lon + 180) / 360 * n;
+  const r = lat * Math.PI / 180;
+  const y = (1 - Math.log(Math.tan(r) + 1 / Math.cos(r)) / Math.PI) / 2 * n;
+  return [x, y];
+}
+function buildSat(z) {
+  const map = document.getElementById('satmap');
+  const wrap = document.getElementById('satwrap');
+  if (!map) return;
+  const [x0, y1] = mercPx(SAT_BBOX.latMax, SAT_BBOX.lonMin, z); // oben links
+  const [x1, y0] = mercPx(SAT_BBOX.latMin, SAT_BBOX.lonMax, z); // unten rechts
+  const tx0 = Math.floor(x0 / 256), tx1 = Math.floor(x1 / 256);
+  const ty0 = Math.floor(y1 / 256), ty1 = Math.floor(y0 / 256);
+  const offX = tx0 * 256 - x0, offY = ty0 * 256 - y1;
+  map.style.width = (x1 - x0) + 'px';
+  map.style.height = (y0 - y1) + 'px';
+  map.querySelectorAll('img, .sat-marker, .sat-zone').forEach(el => el.remove());
+  for (let tx = tx0; tx <= tx1; tx++) {
+    for (let ty = ty0; ty <= ty1; ty++) {
+      const img = document.createElement('img');
+      img.loading = 'lazy';
+      img.alt = '';
+      img.src = 'https://data.geopf.fr/wmts?layer=ORTHOIMAGERY.ORTHOPHOTOS&style=normal'
+        + '&tilematrixset=PM&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg'
+        + '&TileMatrix=' + z + '&TileCol=' + tx + '&TileRow=' + ty;
+      img.style.left = (offX + (tx - tx0) * 256) + 'px';
+      img.style.top  = (offY + (ty - ty0) * 256) + 'px';
+      img.onerror = () => { img.style.background = '#123a63'; };
+      map.appendChild(img);
+    }
+  }
+  SAT_MARKERS.forEach(([label, typ, lat, lon, info, plan]) => {
+    const [mx, my] = mercPx(lat, lon, z);
+    const el = document.createElement('div');
+    el.className = 'sat-marker ' + typ;
+    el.textContent = label;
+    el.title = info;
+    el.style.left = (mx - x0) + 'px';
+    el.style.top = (my - y1) + 'px';
+    el.onclick = () => {
+      if (plan) {
+        const fig = document.getElementById(plan);
+        if (fig) {
+          fig.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          // Nachkorrektur, falls nachladende Bilder die Seite verschoben haben
+          setTimeout(() => { fig.scrollIntoView({ block: 'start' }); }, 700);
+          fig.style.outline = '3px solid var(--blue)';
+          fig.style.borderRadius = '12px';
+          setTimeout(() => { fig.style.outline = 'none'; }, 2500);
+          return;
+        }
+      }
+      if (info) alert(info);
+    };
+    map.appendChild(el);
+  });
+  document.querySelectorAll('#zoombar button').forEach(b =>
+    b.classList.toggle('active', +b.dataset.z === z));
+  // Auf Golfmitte zentrieren
+  const [cx, cy] = mercPx(43.292, 6.630, z);
+  wrap.scrollLeft = cx - x0 - wrap.clientWidth / 2;
+  wrap.scrollTop = cy - y1 - wrap.clientHeight / 2;
+}
+document.querySelectorAll('#zoombar button').forEach(b =>
+  b.onclick = () => buildSat(+b.dataset.z));
+// Erst bauen, wenn der Karten-Tab erstmals geöffnet wird (spart Daten)
+let satBuilt = false;
+const origShowTab = showTab;
+showTab = function (id) {
+  origShowTab(id);
+  if (id === 'karte' && !satBuilt) { satBuilt = true; buildSat(13); }
+};
+// Falls die App direkt im Karten-Tab startet
+if (document.getElementById('panel-karte').classList.contains('active')) {
+  satBuilt = true; buildSat(13);
+}
+
+
+// ---------- Service Worker: macht die App offline-fähig ----------
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(() => {});
+  });
+}
+</script>
+</body>
+</html>
