@@ -1260,7 +1260,7 @@ const SAT_MARKERS = [
   ['','h',43.2750,6.5800,'Port Grimaud (VHF 9)',null],
   ['','h',43.2655,6.5870,'Marines de Cogolin (VHF 9)',null]
 ];
-const MINZ = 12, MAXZ = 18;
+const MINZ = 11, MAXZ = 18;
 const swrap = document.getElementById('satwrap'), smap = document.getElementById('satmap'),
       smk = document.getElementById('satmarkers'), zinfo = document.getElementById('zinfo');
 let z = 13, sc = 1, tx = 0, ty = 0, org = [0, 0], seaOn = true;
@@ -1343,12 +1343,28 @@ function place() {
   zinfo.textContent = 'Zoom ' + (z + Math.log2(sc)).toFixed(1);
 }
 function zoomAt(cx, cy, factor) {
-  const ns = sc * factor;
-  const eff = z + Math.log2(ns);
-  if (eff < MINZ || eff > MAXZ) return;
+  // Zoomstufe begrenzen statt die Geste abzulehnen: sonst blockiert ein kleiner
+  // Pinch-Schritt komplett, wenn die Ansicht (z.B. nach «Ganzer Golf») unter MINZ liegt.
+  const cur = z + Math.log2(sc);
+  const lo = Math.min(MINZ, cur);
+  let target = cur + Math.log2(factor);
+  if (target > MAXZ) target = MAXZ;
+  if (target < lo) target = lo;
+  const f = Math.pow(2, target - cur);
+  if (Math.abs(f - 1) < 1e-5) return;
+  const ns = sc * f;
   tx = cx - (cx - tx) * (ns / sc); ty = cy - (cy - ty) * (ns / sc); sc = ns;
-  while (sc > 1.5 && z < MAXZ) { sc /= 2; z++; buildTiles(); }
-  while (sc < 0.75 && z > MINZ) { sc *= 2; z--; buildTiles(); }
+  place();
+  // Kachelstufe erst wechseln, wenn keine Finger mehr auf der Karte sind:
+  // ein Neuaufbau der Kacheln würde eine laufende Geste abbrechen.
+  if (!gestureOn && ptrs.size === 0) normalizeZoom();
+}
+// Skalierung in den Bereich 0,75–1,5 bringen und dazu die passende Kachelstufe laden
+function normalizeZoom() {
+  let changed = false;
+  while (sc > 1.5 && z < MAXZ) { sc /= 2; z++; changed = true; }
+  while (sc < 0.75 && z > MINZ) { sc *= 2; z--; changed = true; }
+  if (changed) buildTiles();
   place();
 }
 function fitMap() {
@@ -1360,6 +1376,7 @@ function fitMap() {
   tx = (swrap.clientWidth - w * sc) / 2;
   ty = (swrap.clientHeight - h * sc) / 2;
   place();
+  normalizeZoom();
 }
 swrap.addEventListener('wheel', e => {
   e.preventDefault();
@@ -1384,6 +1401,7 @@ swrap.addEventListener('gesturechange', e => {
 }, { passive: false });
 ['gestureend', 'gesturecancel'].forEach(ev => swrap.addEventListener(ev, e => {
   e.preventDefault(); gestureOn = false;
+  if (!ptrs.size) normalizeZoom();
 }, { passive: false }));
 swrap.addEventListener('pointerdown', e => {
   swrap.setPointerCapture(e.pointerId); ptrs.set(e.pointerId, e);
@@ -1406,7 +1424,7 @@ swrap.addEventListener('pointermove', e => {
 ['pointerup', 'pointercancel', 'pointerleave'].forEach(ev => swrap.addEventListener(ev, e => {
   ptrs.delete(e.pointerId);
   if (ptrs.size < 2) lastDist = null;
-  if (!ptrs.size) swrap.classList.remove('drag');
+  if (!ptrs.size) { swrap.classList.remove('drag'); if (!gestureOn) normalizeZoom(); }
 }));
 swrap.addEventListener('dblclick', e => {
   const r = swrap.getBoundingClientRect();
@@ -1459,7 +1477,7 @@ if (document.getElementById('panel-karte').classList.contains('active')) {
 })();
 
 // ---------- Version und Update-Erkennung ----------
-const APP_VERSION = 'v46';
+const APP_VERSION = 'v48';
 const verEl = document.getElementById('appver');
 if (verEl) verEl.textContent = 'App-Version ' + APP_VERSION;
 
