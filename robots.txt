@@ -1,0 +1,3 @@
+# Private, nicht kommerzielle Zusammenstellung — bewusst nicht in Suchmaschinen.
+User-agent: *
+Disallow: /
