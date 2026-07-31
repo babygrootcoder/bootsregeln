@@ -1,7 +1,7 @@
 // Service Worker — cached alle App-Dateien für Offline-Betrieb.
 // Bei inhaltlichen Updates: CACHE_VERSION hochzählen, dann lädt die App beim
 // nächsten Online-Besuch automatisch die neue Version.
-const CACHE_VERSION = 'bootsregeln-v33';
+const CACHE_VERSION = 'bootsregeln-v34';
 const TILE_CACHE = 'bootsregeln-tiles-v1'; // Satelliten-Kacheln (IGN), separat gecacht
 const PLAENE = [
   'sm-uebersicht', 'sm-croisette', 'sm-croisette-zrub', 'sm-centre-ville', 'sm-madrague',
@@ -60,14 +60,20 @@ self.addEventListener('fetch', (event) => {
 
   event.respondWith(
     caches.match(event.request, { ignoreSearch: true }).then((cached) => {
-      return cached || fetch(event.request).then((response) => {
-        // Neue Dateien gleicher Herkunft in den Cache legen
+      if (cached) return cached;
+      return fetch(event.request).then((response) => {
+        // Nur erfolgreiche Antworten gleicher Herkunft in den Cache legen
         if (response.ok && event.request.url.startsWith(self.location.origin)) {
           const copy = response.clone();
           caches.open(CACHE_VERSION).then((cache) => cache.put(event.request, copy));
         }
         return response;
+      }).catch(() => {
+        // Ersatz-Startseite NUR für Seitenaufrufe — nie für Bilder o.ä.,
+        // sonst zeigt der Browser ein kaputtes Bild statt einer Fehlermeldung.
+        if (event.request.mode === 'navigate') return caches.match('./index.html');
+        return new Response('', { status: 504, statusText: 'Offline' });
       });
-    }).catch(() => caches.match('./index.html'))
+    })
   );
 });

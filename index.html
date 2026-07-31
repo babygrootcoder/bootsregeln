@@ -21,6 +21,7 @@
   }
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html { -webkit-text-size-adjust: 100%; }
+  html, body { max-width: 100%; overflow-x: hidden; }
   body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     background: var(--bg); color: var(--ink); line-height: 1.5;
@@ -38,6 +39,7 @@
   @keyframes fadein { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; } }
 
   .card {
+    overflow-wrap: anywhere;
     background: var(--card); border: 1px solid var(--line); border-radius: 14px;
     padding: 14px 16px; margin: 10px 0; box-shadow: 0 1px 2px rgba(16,42,74,.05);
   }
@@ -83,7 +85,10 @@
   details[open] summary:after { content: "–"; }
   details .inner { padding: 0 0 12px; }
 
-  table { width: 100%; border-collapse: collapse; font-size: 13.5px; margin: 8px 0; }
+  .card { overflow-x: hidden; }
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; margin: 8px 0;
+    display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  table tr { display: table; width: 100%; table-layout: fixed; }
   th, td { text-align: left; padding: 7px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
   th { background: var(--sky); color: var(--navy); font-size: 12.5px; }
 
@@ -352,7 +357,7 @@
         <li><b>Grüne Tonnen (konisch, «spitz») = Steuerbord:</b> bei der Einfahrt <b>rechts</b> liegen lassen — bei der Ausfahrt alles seitenverkehrt. Feuer: <b>grün</b>, Rhythmus beliebig.</li>
       </ul>
       <figure style="margin:10px 0 4px">
-        <img src="plaene/boje-lat-a.jpg" alt="Lateralmarken mit Feuer-Kennungen — BSH/BMDV «Sicherheit auf dem Wasser», 12/2023. Pricke/Besen-Toppzeichen: nur deutsche Küstengewässer, im Mittelmeer nicht verwendet." loading="lazy" style="aspect-ratio:1200/308;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <img src="plaene/boje-lat-a.jpg" alt="Lateralmarken mit Feuer-Kennungen — BSH/BMDV «Sicherheit auf dem Wasser», 12/2023. Pricke/Besen-Toppzeichen: nur deutsche Küstengewässer, im Mittelmeer nicht verwendet." style="aspect-ratio:1200/308;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
         <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Lateralmarken mit Feuer-Kennungen — BSH/BMDV «Sicherheit auf dem Wasser», 12/2023. Pricke/Besen-Toppzeichen: nur deutsche Küstengewässer, im Mittelmeer nicht verwendet.</figcaption>
       </figure>
     </div>
@@ -368,7 +373,7 @@
         <li><b>West</b> — Kegel zueinander («Weinglas»): <b>westlich</b> passieren. Feuer: <b>9</b> Blitze alle 10 bzw. 15 s.</li>
       </ul>
       <figure style="margin:10px 0 4px">
-        <img src="plaene/boje-cardinal.jpg" alt="Kardinalzeichen mit Toppzeichen und Kennungen (SFkl. = schnelles Funkelfeuer, Fkl. = Funkelfeuer) — BSH/BMDV «Sicherheit auf dem Wasser», 12/2023" loading="lazy" style="aspect-ratio:1200/1177;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <img src="plaene/boje-cardinal.jpg" alt="Kardinalzeichen mit Toppzeichen und Kennungen (SFkl. = schnelles Funkelfeuer, Fkl. = Funkelfeuer) — BSH/BMDV «Sicherheit auf dem Wasser», 12/2023" style="aspect-ratio:1200/1177;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
         <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Kardinalzeichen mit Toppzeichen und Kennungen (SFkl. = schnelles Funkelfeuer, Fkl. = Funkelfeuer) — BSH/BMDV «Sicherheit auf dem Wasser», 12/2023</figcaption>
       </figure>
     </div>
@@ -378,19 +383,19 @@
       <h3>Einzelgefahr</h3>
       <p>Schwarz-rot mit <b>2 schwarzen Kugeln</b> — steht <b>direkt auf</b> der Gefahr (Fels, Wrack): mit Abstand auf beliebiger Seite passieren. Feuer: <b>weiss, Blitzgruppen à 2</b> (alle 5 oder 10 s).</p>
       <figure style="margin:10px 0 4px">
-        <img src="plaene/boje-danger.jpg" alt="Einzelgefahrenstellen — an allen Seiten passierbar — BSH/BMDV «Sicherheit auf dem Wasser», 12/2023" loading="lazy" style="aspect-ratio:1087/681;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <img src="plaene/boje-danger.jpg" alt="Einzelgefahrenstellen — an allen Seiten passierbar — BSH/BMDV «Sicherheit auf dem Wasser», 12/2023" style="aspect-ratio:1087/681;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
         <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Einzelgefahrenstellen — an allen Seiten passierbar — BSH/BMDV «Sicherheit auf dem Wasser», 12/2023</figcaption>
       </figure>
       <h3>Sicheres Fahrwasser</h3>
       <p>Rot-weiss <b>senkrecht</b> gestreift, 1 rote Kugel als Topp — ringsum sicheres Wasser (z.B. Ansteuerung, Fahrwassermitte). Feuer: <b>weiss</b> — Isophase, Unterbrochen, 1 langer Blitz alle 10 s oder Morse «A».</p>
       <figure style="margin:10px 0 4px">
-        <img src="plaene/boje-eaux.jpg" alt="Fahrwassermitte/Ansteuerung (sicheres Fahrwasser) — BSH/BMDV «Sicherheit auf dem Wasser», 12/2023" loading="lazy" style="aspect-ratio:1087/605;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <img src="plaene/boje-eaux.jpg" alt="Fahrwassermitte/Ansteuerung (sicheres Fahrwasser) — BSH/BMDV «Sicherheit auf dem Wasser», 12/2023" style="aspect-ratio:1087/605;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
         <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Fahrwassermitte/Ansteuerung (sicheres Fahrwasser) — BSH/BMDV «Sicherheit auf dem Wasser», 12/2023</figcaption>
       </figure>
       <h3>Sonderzeichen</h3>
       <p><b>Gelb</b>, Form beliebig, gelbes <b>X</b> als Topp — markiert Sonderzonen (Badezonen, Kabel, Sperrgebiete, 300-m-Grenze); Bedeutung gemäss Seekarte/Ortsplan. Feuer: <b>gelb</b>, Rhythmus anders als bei den weissen Kennungen.</p>
       <figure style="margin:10px 0 4px">
-        <img src="plaene/boje-spez.jpg" alt="Sonderzeichen: besondere Gebiete und Stellen (gelb) — BSH/BMDV «Sicherheit auf dem Wasser», 12/2023" loading="lazy" style="aspect-ratio:1200/464;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <img src="plaene/boje-spez.jpg" alt="Sonderzeichen: besondere Gebiete und Stellen (gelb) — BSH/BMDV «Sicherheit auf dem Wasser», 12/2023" style="aspect-ratio:1200/464;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
         <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Sonderzeichen: besondere Gebiete und Stellen (gelb) — BSH/BMDV «Sicherheit auf dem Wasser», 12/2023</figcaption>
       </figure>
     </div>
@@ -400,15 +405,15 @@
       <h2>Gelbe Bojen am Strand — der Plan de balisage</h2>
       <p>Amtlich normierte Formen (Arrêté 27.03.1991): alle Bojen <b>ausschliesslich gelb (RAL 1003)</b> — die Form sagt, was gemeint ist (Abbildungen: SHOM, Ouvrage 3):</p>
       <div class="buoy-row">
-        <img style="aspect-ratio:312/351;height:auto;" class="foto" src="plaene/boje-kugel.jpg" alt="Kugelförmige gelbe Boje (SHOM)" loading="lazy">
+        <img style="aspect-ratio:312/351;height:auto;" class="foto" src="plaene/boje-kugel.jpg" alt="Kugelförmige gelbe Boje (SHOM)">
         <div class="txt"><b>Kugelförmig — Zonengrenze</b><br>Markiert die äussere 300-m-Grenze (grosse Tonnen Ø 0,8 m, alle 200 m) und die Grenzen der Zonen innerhalb (Badezone, ZIEM…; Ø 0,4–0,6 m).<small>Zwischen Badezonen-Bojen kann zusätzlich eine gelbe Schwimmleine liegen.</small></div>
       </div>
       <div class="buoy-row">
-        <img style="aspect-ratio:270/351;height:auto;" class="foto" src="plaene/boje-zylinder.jpg" alt="Zylindrische gelbe Boje (SHOM)" loading="lazy">
+        <img style="aspect-ratio:270/351;height:auto;" class="foto" src="plaene/boje-zylinder.jpg" alt="Zylindrische gelbe Boje (SHOM)">
         <div class="txt"><b>Zylindrisch («stumpf») — Backbordseite des Chenals</b><br>Bei der Fahrt <b>vom Meer Richtung Strand</b>: diese Bojen links lassen.<small>Gleiche Logik wie im Hafen — nur alles in Gelb.</small></div>
       </div>
       <div class="buoy-row">
-        <img style="aspect-ratio:291/351;height:auto;" class="foto" src="plaene/boje-kegel.jpg" alt="Konische gelbe Boje (SHOM)" loading="lazy">
+        <img style="aspect-ratio:291/351;height:auto;" class="foto" src="plaene/boje-kegel.jpg" alt="Konische gelbe Boje (SHOM)">
         <div class="txt"><b>Konisch («spitz») — Steuerbordseite des Chenals</b><br>Bei der Fahrt <b>vom Meer Richtung Strand</b>: diese Bojen rechts lassen. Bei der Ausfahrt seitenverkehrt.</div>
       </div>
       <p>An Land stehen zudem normierte <b>Piktogramm-Tafeln</b> (rot durchgestrichen = verboten): Motorboot, Segler, Jetski, Wasserski, Windsurf, Baden, 5-kn-Limit.</p>
@@ -428,7 +433,7 @@
       </div>
       <h3>So sieht es vor dem Strand aus (amtliche Illustration)</h3>
       <figure style="margin:6px 0">
-        <img src="plaene/dirm-strand.jpg" alt="Strand-Balisierung schematisch (SHOM)" loading="lazy"
+        <img src="plaene/dirm-strand.jpg" alt="Strand-Balisierung schematisch (SHOM)"
              style="aspect-ratio:1400/1290;height:auto;width:100%;max-width:420px;display:block;margin:0 auto;border-radius:10px;border:1px solid var(--line)">
         <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px;text-align:center">Amtliches Beispiel einer Strand-Balisierung: Badezone, Bordure extérieure, Chenal traversier, 300 m, max. 5 kn — SHOM, Ouvrage 3</figcaption>
       </figure>
@@ -446,7 +451,7 @@
         <tr><td>Rot über Weiss</td><td>Fischer (nicht schleppend)</td></tr>
       </table>
       <figure style="margin:10px 0 4px">
-        <img src="plaene/feuer-legende.jpg" alt="Feuer-Kennungen Zeichenerklärung (BSH)" loading="lazy" style="aspect-ratio:1200/742;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <img src="plaene/feuer-legende.jpg" alt="Feuer-Kennungen Zeichenerklärung (BSH)" style="aspect-ratio:1200/742;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
         <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Feuer-Kennungen lesen: Unterbrochen (Oc), Gleichtakt (Iso), Blitz (Fl), Funkel (Q), Schnelles Funkel (VQ), Blink (LFl) — BSH/BMDV «Sicherheit auf dem Wasser», 12/2023</figcaption>
       </figure>
       <p><small>Faustregel: Siehst du <b>rot</b> (fremde Backbordseite), hat der andere Vorrang — siehst du <b>grün</b>, hast in der Regel du Vorrang. Im Zweifel: ausweichen.</small></p>
@@ -499,7 +504,7 @@
       <span class="lvl lvl-loc">Lokal: Gemeinde</span>
       <h2>Sainte-Maxime — Nordufer (AP 168/2026 vom 01.06.2026)</h2>
       <figure id="fig-sm-uebersicht" style="margin:8px 0 4px">
-        <img src="plaene/sm-uebersicht.jpg" alt="Übersicht ganze Gemeinde (Annexe I)" loading="lazy" style="aspect-ratio:1066/808;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <img src="plaene/sm-uebersicht.jpg" alt="Übersicht ganze Gemeinde (Annexe I)" style="aspect-ratio:1066/808;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
         <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Übersicht ganze Gemeinde (Annexe I)</figcaption>
       </figure>
       <div class="loc" id="loc-1">
@@ -509,11 +514,11 @@
         <li>Badezonen ZRUB 1b und 2b gelten <b>ganzjährig</b>.</li>
       </ul>
       <figure style="margin:8px 0 4px">
-        <img src="plaene/sm-croisette.jpg" alt="Annexe II" loading="lazy" style="aspect-ratio:1050/808;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <img src="plaene/sm-croisette.jpg" alt="Annexe II" style="aspect-ratio:1050/808;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
         <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Annexe II</figcaption>
       </figure>
       <figure style="margin:8px 0 4px">
-        <img src="plaene/sm-croisette-zrub.jpg" alt="Annexe II bis — Badezonen" loading="lazy" style="aspect-ratio:1050/808;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <img src="plaene/sm-croisette-zrub.jpg" alt="Annexe II bis — Badezonen" style="aspect-ratio:1050/808;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
         <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Annexe II bis — Badezonen</figcaption>
       </figure>
       </div>
@@ -524,7 +529,7 @@
         <li>Westlich davon ZIEM 1m (210×100 m, Motorverbot), Préconil-Mündung bis Pointe de la Croisette.</li>
       </ul>
       <figure style="margin:8px 0 4px">
-        <img src="plaene/sm-centre-ville.jpg" alt="Annexe III" loading="lazy" style="aspect-ratio:1050/808;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <img src="plaene/sm-centre-ville.jpg" alt="Annexe III" style="aspect-ratio:1050/808;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
         <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Annexe III</figcaption>
       </figure>
       </div>
@@ -534,7 +539,7 @@
         <li>ZIEM 2m über die ganze Strandbreite (660×100 m) — Motorboote komplett verboten.</li>
       </ul>
       <figure style="margin:8px 0 4px">
-        <img src="plaene/sm-madrague.jpg" alt="Annexe IV" loading="lazy" style="aspect-ratio:1050/808;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <img src="plaene/sm-madrague.jpg" alt="Annexe IV" style="aspect-ratio:1050/808;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
         <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Annexe IV</figcaption>
       </figure>
       </div>
@@ -545,11 +550,11 @@
         <li>Um die Tourelle des Sardinaux: Navigations-/Ankersperrzone bis 15.09.2026 (AP 46/2026) und 5 kn im 300-m-Radius (AP 11/95).</li>
       </ul>
       <figure style="margin:8px 0 4px">
-        <img src="plaene/sm-sardinaux.jpg" alt="Annexe V" loading="lazy" style="aspect-ratio:1050/808;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <img src="plaene/sm-sardinaux.jpg" alt="Annexe V" style="aspect-ratio:1050/808;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
         <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Annexe V</figcaption>
       </figure>
       <figure style="margin:8px 0 4px">
-        <img src="plaene/sm-tourelle-sardinaux.jpg" alt="Annexe V bis — Tourelle des Sardinaux" loading="lazy" style="aspect-ratio:1050/808;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <img src="plaene/sm-tourelle-sardinaux.jpg" alt="Annexe V bis — Tourelle des Sardinaux" style="aspect-ratio:1050/808;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
         <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Annexe V bis — Tourelle des Sardinaux</figcaption>
       </figure>
       </div>
@@ -560,11 +565,11 @@
         <li>Dazwischen ZIEM 4m und 5m; Jetski-Ankerplätze beidseits von Kanal 8; Badezone ZRUB 6b ganzjährig.</li>
       </ul>
       <figure style="margin:8px 0 4px">
-        <img src="plaene/sm-nartelle.jpg" alt="Annexe VI" loading="lazy" style="aspect-ratio:1050/808;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <img src="plaene/sm-nartelle.jpg" alt="Annexe VI" style="aspect-ratio:1050/808;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
         <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Annexe VI</figcaption>
       </figure>
       <figure style="margin:8px 0 4px">
-        <img src="plaene/sm-nartelle-zrub.jpg" alt="Annexe VI bis — Badezonen" loading="lazy" style="aspect-ratio:1050/808;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <img src="plaene/sm-nartelle-zrub.jpg" alt="Annexe VI bis — Badezonen" style="aspect-ratio:1050/808;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
         <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Annexe VI bis — Badezonen</figcaption>
       </figure>
       </div>
@@ -574,7 +579,7 @@
         <li>ZIEM 6m über die ganze Strandbreite (395×80 m) — Motorboote komplett verboten.</li>
       </ul>
       <figure style="margin:8px 0 4px">
-        <img src="plaene/sm-elephants.jpg" alt="Annexe VII" loading="lazy" style="aspect-ratio:1050/808;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <img src="plaene/sm-elephants.jpg" alt="Annexe VII" style="aspect-ratio:1050/808;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
         <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Annexe VII</figcaption>
       </figure>
       </div>
@@ -584,7 +589,7 @@
         <li>Kanäle 12 (auch Jetski/eFoil), 13 (Rettung) und 15; ZIEM 7m (75×80 m); Jetski-Ankerplatz.</li>
       </ul>
       <figure style="margin:8px 0 4px">
-        <img src="plaene/sm-garonnette.jpg" alt="Annexe VIII" loading="lazy" style="aspect-ratio:1050/808;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <img src="plaene/sm-garonnette.jpg" alt="Annexe VIII" style="aspect-ratio:1050/808;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
         <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Annexe VIII</figcaption>
       </figure>
       </div>
@@ -599,7 +604,7 @@
         <li>Kanal 1 (40×300 m, auch Jetski) + Rettungskanal (15×300 m); Jetski-Ankerplatz der Basis.</li>
       </ul>
       <figure style="margin:8px 0 4px">
-        <img src="plaene/gr-port-grimaud.jpg" alt="Annexe I" loading="lazy" style="aspect-ratio:1096/808;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <img src="plaene/gr-port-grimaud.jpg" alt="Annexe I" style="aspect-ratio:1096/808;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
         <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Annexe I</figcaption>
       </figure>
       </div>
@@ -610,11 +615,11 @@
         <li>Private Bojenfelder (AOT 1/1bis) seeseitig — Festmachen nur mit Bewilligung des Präfekten.</li>
       </ul>
       <figure style="margin:8px 0 4px">
-        <img src="plaene/gr-mures-1.jpg" alt="Annexe II — Les Mûres 1" loading="lazy" style="aspect-ratio:1120/808;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <img src="plaene/gr-mures-1.jpg" alt="Annexe II — Les Mûres 1" style="aspect-ratio:1120/808;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
         <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Annexe II — Les Mûres 1</figcaption>
       </figure>
       <figure style="margin:8px 0 4px">
-        <img src="plaene/gr-mures-2.jpg" alt="Annexe III — Les Mûres 2" loading="lazy" style="aspect-ratio:1091/808;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <img src="plaene/gr-mures-2.jpg" alt="Annexe III — Les Mûres 2" style="aspect-ratio:1091/808;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
         <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Annexe III — Les Mûres 2</figcaption>
       </figure>
       </div>
@@ -626,7 +631,7 @@
         <li>Bojenfelder AOT 3 (Vieux Moulin) und 4 (Pingouin Bleu).</li>
       </ul>
       <figure style="margin:8px 0 4px">
-        <img src="plaene/gr-vieuxmoulin-beauvallon.jpg" alt="Annexe IV" loading="lazy" style="aspect-ratio:1091/808;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <img src="plaene/gr-vieuxmoulin-beauvallon.jpg" alt="Annexe IV" style="aspect-ratio:1091/808;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
         <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Annexe IV</figcaption>
       </figure>
       </div>
@@ -636,11 +641,11 @@
         <li>Kanal 8, ZIEM P und Q, Bojenfelder AOT 5/6.</li>
       </ul>
       <figure style="margin:8px 0 4px">
-        <img src="plaene/gr-guerrevieille-1.jpg" alt="Annexe V" loading="lazy" style="aspect-ratio:1103/808;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <img src="plaene/gr-guerrevieille-1.jpg" alt="Annexe V" style="aspect-ratio:1103/808;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
         <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Annexe V</figcaption>
       </figure>
       <figure style="margin:8px 0 4px">
-        <img src="plaene/gr-cigales-guerrevieille-2.jpg" alt="Annexe VI — Les Cigales + Guerrevieille 2" loading="lazy" style="aspect-ratio:1097/808;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <img src="plaene/gr-cigales-guerrevieille-2.jpg" alt="Annexe VI — Les Cigales + Guerrevieille 2" style="aspect-ratio:1097/808;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
         <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Annexe VI — Les Cigales + Guerrevieille 2</figcaption>
       </figure>
       </div>
@@ -650,11 +655,11 @@
       <span class="lvl lvl-loc">Lokal: Gemeinde</span>
       <h2>Saint-Tropez — Südufer (AP 297/2026 vom 24.07.2026)</h2>
       <figure id="fig-st-uebersicht" style="margin:8px 0 4px">
-        <img src="plaene/st-uebersicht.jpg" alt="Übersicht: gelbe 5-kn-Linie + rotes 300-m-Band, Strände 1–7 (Annexe I)" loading="lazy" style="aspect-ratio:1112/712;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <img src="plaene/st-uebersicht.jpg" alt="Übersicht: gelbe 5-kn-Linie + rotes 300-m-Band, Strände 1–7 (Annexe I)" style="aspect-ratio:1112/712;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
         <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Übersicht: gelbe 5-kn-Linie + rotes 300-m-Band, Strände 1–7 (Annexe I)</figcaption>
       </figure>
       <figure id="fig-st-5kn-zone" style="margin:8px 0 4px">
-        <img src="plaene/st-5kn-zone.jpg" alt="5-kn-Zone Rabiou–Capon + AOT-Coffre «MY SYMPHONY» (Annexe II)" loading="lazy" style="aspect-ratio:1088/712;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <img src="plaene/st-5kn-zone.jpg" alt="5-kn-Zone Rabiou–Capon + AOT-Coffre «MY SYMPHONY» (Annexe II)" style="aspect-ratio:1088/712;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
         <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">5-kn-Zone Rabiou–Capon + AOT-Coffre «MY SYMPHONY» (Annexe II)</figcaption>
       </figure>
       <div class="loc" id="loc-9">
@@ -664,7 +669,7 @@
         <li>Ankerverbotszonen ZIM 5 und 7 westlich des Hafens; Bojenfeld AOT 1.</li>
       </ul>
       <figure style="margin:8px 0 4px">
-        <img src="plaene/st-bouillabaisse.jpg" alt="Annexe III" loading="lazy" style="aspect-ratio:1088/696;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <img src="plaene/st-bouillabaisse.jpg" alt="Annexe III" style="aspect-ratio:1088/696;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
         <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Annexe III</figcaption>
       </figure>
       </div>
@@ -677,7 +682,7 @@
         <li>Bojenfelder AOT 3 (Paressouso) und 4 (Canebiers).</li>
       </ul>
       <figure style="margin:8px 0 4px">
-        <img src="plaene/st-canebiers.jpg" alt="Annexe VI" loading="lazy" style="aspect-ratio:1184/672;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <img src="plaene/st-canebiers.jpg" alt="Annexe VI" style="aspect-ratio:1184/672;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
         <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Annexe VI</figcaption>
       </figure>
       </div>
@@ -687,7 +692,7 @@
         <li>Rettungskanal 11 (10×50 m) östlich der Pointe Pesquière — freihalten.</li>
       </ul>
       <figure style="margin:8px 0 4px">
-        <img src="plaene/st-ponche.jpg" alt="Annexe IV" loading="lazy" style="aspect-ratio:1177/696;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <img src="plaene/st-ponche.jpg" alt="Annexe IV" style="aspect-ratio:1177/696;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
         <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Annexe IV</figcaption>
       </figure>
       </div>
@@ -697,7 +702,7 @@
         <li>Badezonen ZRUB 12/13; Bojenfeld AOT 2 beidseits der 300-m-Linie.</li>
       </ul>
       <figure style="margin:8px 0 4px">
-        <img src="plaene/st-graniers.jpg" alt="Annexe V" loading="lazy" style="aspect-ratio:1171/672;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <img src="plaene/st-graniers.jpg" alt="Annexe V" style="aspect-ratio:1171/672;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
         <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Annexe V</figcaption>
       </figure>
       </div>
@@ -707,7 +712,7 @@
         <li>Badezone ZRUB 26; Bojenfeld AOT 6 seewärts der 300-m-Linie.</li>
       </ul>
       <figure style="margin:8px 0 4px">
-        <img src="plaene/st-cabine-de-bain.jpg" alt="Annexe VII" loading="lazy" style="aspect-ratio:1184/712;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <img src="plaene/st-cabine-de-bain.jpg" alt="Annexe VII" style="aspect-ratio:1184/712;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
         <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Annexe VII</figcaption>
       </figure>
       </div>
@@ -717,7 +722,7 @@
         <li>Kanal 28 (20×110 m) zwischen den Badezonen ZRUB 27 und 29; Bojenfeld AOT 7.</li>
       </ul>
       <figure style="margin:8px 0 4px">
-        <img src="plaene/st-moutte.jpg" alt="Annexe VIII" loading="lazy" style="aspect-ratio:1176/712;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <img src="plaene/st-moutte.jpg" alt="Annexe VIII" style="aspect-ratio:1176/712;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
         <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Annexe VIII</figcaption>
       </figure>
       </div>
@@ -727,7 +732,7 @@
         <li>Kanal 30 (15×150 m) + Rettungskanal 32; Bojenfeld AOT 8 nördlich.</li>
       </ul>
       <figure style="margin:8px 0 4px">
-        <img src="plaene/st-salins.jpg" alt="Annexe IX" loading="lazy" style="aspect-ratio:1112/568;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <img src="plaene/st-salins.jpg" alt="Annexe IX" style="aspect-ratio:1112/568;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
         <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Annexe IX</figcaption>
       </figure>
       </div>
@@ -844,7 +849,7 @@
         <li>Die ganze Bucht ist 5-kn-Zone; ausserhalb der ZIEM/ZRUB darf zusätzlich frei geankert werden — <b>nur auf Sand</b>.</li>
       </ul>
       <figure style="margin:8px 0 4px">
-        <img src="plaene/st-canebiers.jpg" alt="Baie des Canoubiers — Anker-Zonen 19/22/25 (Anker-Symbol), Kanäle und ZIEM (AP 297/2026, Annexe VI)" loading="lazy" style="aspect-ratio:1184/672;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <img src="plaene/st-canebiers.jpg" alt="Baie des Canoubiers — Anker-Zonen 19/22/25 (Anker-Symbol), Kanäle und ZIEM (AP 297/2026, Annexe VI)" style="aspect-ratio:1184/672;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
         <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Baie des Canoubiers — Anker-Zonen 19/22/25 (Anker-Symbol), Kanäle und ZIEM (AP 297/2026, Annexe VI)</figcaption>
       </figure>
       <h3>Bojenfelder (AOT) — nicht einfach belegen!</h3>
@@ -853,7 +858,7 @@
         <li>Innerhalb der Felder gilt 5 kn; Ankern zwischen den Bojen ist tabu (Kettensalat).</li>
       </ul>
       <figure style="margin:8px 0 4px">
-        <img src="plaene/gr-mures-1.jpg" alt="Grimaud/Les Mûres — Bojenfeld «Zone de mouillage n°1/1bis» seeseitig der Badezonen (AP 242/2024, Annexe II)" loading="lazy" style="aspect-ratio:1120/808;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <img src="plaene/gr-mures-1.jpg" alt="Grimaud/Les Mûres — Bojenfeld «Zone de mouillage n°1/1bis» seeseitig der Badezonen (AP 242/2024, Annexe II)" style="aspect-ratio:1120/808;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
         <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Grimaud/Les Mûres — Bojenfeld «Zone de mouillage n°1/1bis» seeseitig der Badezonen (AP 242/2024, Annexe II)</figcaption>
       </figure>
       <h3>Wo Ankern verboten ist</h3>
@@ -866,7 +871,7 @@
         <li>Das <b>Grossyacht-Ankerfeld</b> mitten im Golf meiden — dort schwoien 45-m-Yachten an langen Ketten.</li>
       </ul>
       <figure style="margin:8px 0 4px">
-        <img src="plaene/st-bouillabaisse.jpg" alt="ZIM 5 + 7 westlich des Hafens St-Tropez — Ankerverbot (AP 297/2026, Annexe III)" loading="lazy" style="aspect-ratio:1088/696;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
+        <img src="plaene/st-bouillabaisse.jpg" alt="ZIM 5 + 7 westlich des Hafens St-Tropez — Ankerverbot (AP 297/2026, Annexe III)" style="aspect-ratio:1088/696;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
         <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">ZIM 5 + 7 westlich des Hafens St-Tropez — Ankerverbot (AP 297/2026, Annexe III)</figcaption>
       </figure>
       <span class="src">Quellen: AP 297/2026 (Canoubiers-Zonen, ZIM) · AP 242/2024 (Grimaud AOT) · AP 46/2026 · AP 21/2005 · AP 45/2004 · AP 977/1972</span>
