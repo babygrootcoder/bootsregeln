@@ -132,7 +132,11 @@
     position: relative; width: 100%; height: 64vh; min-height: 340px; overflow: hidden;
     border: 1px solid var(--line); border-radius: 10px; background: #0b2a4a;
     touch-action: none; cursor: grab;
+    -webkit-user-select: none; user-select: none;
   }
+  /* touch-action wird nicht vererbt — Kacheln und Marker brauchen es einzeln,
+     sonst deutet Safari die Zwei-Finger-Geste als Seiten-Zoom. */
+  #satwrap * { touch-action: none; }
   #satwrap.drag { cursor: grabbing; }
   #satmap { position: absolute; left: 0; top: 0; transform-origin: 0 0; will-change: transform; }
   #satmap img { position: absolute; width: 256px; height: 256px; display: block; }
@@ -1364,6 +1368,23 @@ swrap.addEventListener('wheel', e => {
 }, { passive: false });
 const ptrs = new Map();
 let lastDist = null, dragged = false;
+// Safari (iOS) liefert für Zwei-Finger-Gesten eigene Events — die sind hier zuverlässiger.
+let gestureOn = false, gScale = 1, gCx = 0, gCy = 0;
+swrap.addEventListener('gesturestart', e => {
+  e.preventDefault();
+  const r = swrap.getBoundingClientRect();
+  gestureOn = true; gScale = e.scale || 1;
+  gCx = e.clientX - r.left; gCy = e.clientY - r.top;
+}, { passive: false });
+swrap.addEventListener('gesturechange', e => {
+  e.preventDefault();
+  if (!gestureOn || !e.scale) return;
+  zoomAt(gCx, gCy, e.scale / gScale);
+  gScale = e.scale;
+}, { passive: false });
+['gestureend', 'gesturecancel'].forEach(ev => swrap.addEventListener(ev, e => {
+  e.preventDefault(); gestureOn = false;
+}, { passive: false }));
 swrap.addEventListener('pointerdown', e => {
   swrap.setPointerCapture(e.pointerId); ptrs.set(e.pointerId, e);
   swrap.classList.add('drag'); lastDist = null; dragged = false;
@@ -1374,7 +1395,7 @@ swrap.addEventListener('pointermove', e => {
   dragged = true;
   const r = swrap.getBoundingClientRect();
   if (ptrs.size === 1) { tx += e.clientX - prev.clientX; ty += e.clientY - prev.clientY; place(); }
-  else if (ptrs.size === 2) {
+  else if (ptrs.size === 2 && !gestureOn) {
     const [p1, p2] = [...ptrs.values()];
     const d = Math.hypot(p1.clientX - p2.clientX, p1.clientY - p2.clientY);
     const cx = (p1.clientX + p2.clientX) / 2 - r.left, cy = (p1.clientY + p2.clientY) / 2 - r.top;
@@ -1438,7 +1459,7 @@ if (document.getElementById('panel-karte').classList.contains('active')) {
 })();
 
 // ---------- Version und Update-Erkennung ----------
-const APP_VERSION = 'v45';
+const APP_VERSION = 'v46';
 const verEl = document.getElementById('appver');
 if (verEl) verEl.textContent = 'App-Version ' + APP_VERSION;
 
