@@ -1,7 +1,7 @@
 // Service Worker — cached alle App-Dateien für Offline-Betrieb.
 // Bei inhaltlichen Updates: CACHE_VERSION hochzählen, dann lädt die App beim
 // nächsten Online-Besuch automatisch die neue Version.
-const CACHE_VERSION = 'bootsregeln-v32';
+const CACHE_VERSION = 'bootsregeln-v33';
 const TILE_CACHE = 'bootsregeln-tiles-v1'; // Satelliten-Kacheln (IGN), separat gecacht
 const PLAENE = [
   'sm-uebersicht', 'sm-croisette', 'sm-croisette-zrub', 'sm-centre-ville', 'sm-madrague',
