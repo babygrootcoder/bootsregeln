@@ -1,8 +1,8 @@
 // Service Worker — cached alle App-Dateien für Offline-Betrieb.
 // Bei inhaltlichen Updates: CACHE_VERSION hochzählen, dann lädt die App beim
 // nächsten Online-Besuch automatisch die neue Version.
-const CACHE_VERSION = 'bootsregeln-v35';
-const TILE_CACHE = 'bootsregeln-tiles-v1'; // Satelliten-Kacheln (IGN), separat gecacht
+const CACHE_VERSION = 'bootsregeln-v44';
+const TILE_CACHE = 'bootsregeln-tiles-v1'; // Karten-Kacheln (IGN + OpenSeaMap), separat gecacht
 const PLAENE = [
   'sm-uebersicht', 'sm-croisette', 'sm-croisette-zrub', 'sm-centre-ville', 'sm-madrague',
   'sm-sardinaux', 'sm-tourelle-sardinaux', 'sm-nartelle', 'sm-nartelle-zrub', 'sm-elephants',
@@ -15,6 +15,7 @@ const PLAENE = [
 const ASSETS = [
   './',
   './index.html',
+  './info.html',
   './manifest.webmanifest',
   './icon-192.png',
   './icon-512.png',
@@ -44,7 +45,7 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
 
   // Satelliten-Kacheln: cache-first, einmal gesehen = offline verfügbar
-  if (url.hostname === 'data.geopf.fr') {
+  if (url.hostname === 'data.geopf.fr' || url.hostname === 'tiles.openseamap.org') {
     event.respondWith(
       caches.open(TILE_CACHE).then((cache) =>
         cache.match(event.request).then((cached) =>

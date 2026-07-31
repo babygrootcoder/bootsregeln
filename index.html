@@ -118,49 +118,76 @@
   }
   .tel-btn.blau { background: var(--blue); box-shadow: 0 2px 6px rgba(30,111,184,.35); }
 
-  /* Satellitenkarte */
-  .zoombar { display: flex; gap: 8px; margin: 8px 0; }
-  .zoombar button {
-    flex: 1; padding: 8px; border: 1px solid var(--line); border-radius: 8px;
-    background: var(--card); font-family: inherit; font-size: 13px; color: var(--navy-2); cursor: pointer;
+  /* Satellitenkarte — stufenlos zoombar */
+  .mapbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 8px 0 6px; font-size: 13px; }
+  .mapbar button {
+    border: 1px solid var(--line); background: var(--card); border-radius: 8px;
+    padding: 6px 12px; font: inherit; color: var(--navy-2); cursor: pointer;
   }
-  .zoombar button.active { background: var(--blue); color: #fff; border-color: var(--blue); font-weight: 700; }
+  #zinfo { color: var(--muted); }
+  #coord { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 12.5px; color: var(--navy);
+    background: var(--sky); border: 1px solid var(--line); border-radius: 8px; padding: 4px 8px; }
   #satwrap {
-    width: 100%; height: 62vh; overflow: auto; -webkit-overflow-scrolling: touch;
-    border: 1px solid var(--line); border-radius: 10px; background: #0b2a4a; position: relative;
+    position: relative; width: 100%; height: 64vh; min-height: 340px; overflow: hidden;
+    border: 1px solid var(--line); border-radius: 10px; background: #0b2a4a;
+    touch-action: none; cursor: grab;
   }
-  #satmap { position: relative; }
+  #satwrap.drag { cursor: grabbing; }
+  #satmap { position: absolute; left: 0; top: 0; transform-origin: 0 0; will-change: transform; }
   #satmap img { position: absolute; width: 256px; height: 256px; display: block; }
+  #satmarkers { position: absolute; inset: 0; pointer-events: none; }
   .sat-marker {
     position: absolute; transform: translate(-50%, -50%); z-index: 5;
     min-width: 22px; height: 22px; padding: 0 4px; border-radius: 11px;
     display: flex; align-items: center; justify-content: center;
-    color: #fff; font-size: 12px; font-weight: 700;
+    color: #fff; font-size: 12px; font-weight: 700; pointer-events: auto; cursor: pointer;
     box-shadow: 0 1px 4px rgba(0,0,0,.6); border: 1.5px solid #fff;
   }
   .sat-marker.b { background: var(--blue); }
   .sat-marker.r { background: var(--red); border-radius: 5px; }
   .sat-marker.h { background: #0b2a4a; width: 14px; min-width: 14px; height: 14px; border-radius: 7px; }
   .sat-attrib {
-    position: sticky; bottom: 0; left: 0; z-index: 6; display: inline-block;
+    position: absolute; bottom: 0; left: 0; z-index: 6;
     background: rgba(255,255,255,.85); font-size: 10px; color: #333; padding: 2px 6px; border-radius: 0 6px 0 0;
   }
-  .sat-zone { position: absolute; z-index: 4; cursor: pointer; }
-  .sat-zone.chenal { background: rgba(30,111,184,.30); border: 1.5px solid #1e6fb8; }
-  .sat-zone.ziem   { background: rgba(214,69,65,.38);  border: 1.5px solid #d64541; }
-  .sat-zone.zrub   { background: rgba(230,184,0,.40);  border: 1.5px solid #b48900; }
-  .sat-zone.vnm    { background: rgba(13,148,136,.40); border: 1.5px solid #0d9488; }
-  .sat-zone.aot    { background: rgba(30,143,78,.18);  border: 2px dashed #1e8f4e; }
-  .chip { display: inline-flex; min-width: 22px; height: 22px; padding: 0 4px; margin-right: 2px;
-    align-items: center; justify-content: center; color: #fff; font-size: 12.5px; font-weight: 700;
-    border: 1.5px solid #fff; box-shadow: 0 1px 3px rgba(0,0,0,.35); vertical-align: -4px; }
-  .chip.b { background: var(--blue); border-radius: 11px; }
-  .chip.r { background: var(--red); border-radius: 5px; }
-  .loc { border-top: 1px solid var(--line); padding-top: 4px; margin-top: 10px; scroll-margin-top: 70px; }
-  .loc:first-of-type { border-top: none; margin-top: 0; }
-  .zone-legend { display: flex; flex-wrap: wrap; gap: 6px 12px; font-size: 12px; margin: 8px 0 2px; }
-  .zone-legend span { display: inline-flex; align-items: center; gap: 5px; }
-  .zone-legend i { width: 14px; height: 14px; border-radius: 3px; display: inline-block; }
+  .zoombtns { position: absolute; right: 8px; top: 8px; z-index: 6; display: flex; flex-direction: column; gap: 6px; }
+  .zoombtns button {
+    width: 36px; height: 36px; font-size: 20px; line-height: 1; border: 1px solid var(--line);
+    background: rgba(255,255,255,.94); border-radius: 8px; cursor: pointer; font-family: inherit;
+  }
+  #intro {
+    position: fixed; inset: 0; z-index: 60; display: none;
+    background: rgba(8,20,34,.72); padding: 18px;
+    align-items: center; justify-content: center;
+  }
+  #intro.on { display: flex; }
+  #intro .box {
+    background: var(--card); border-radius: 16px; padding: 18px 20px; max-width: 420px;
+    box-shadow: 0 8px 30px rgba(0,0,0,.4);
+  }
+  #intro h2 { font-size: 16px; color: var(--navy); margin-bottom: 8px; }
+  #intro p { font-size: 14.5px; margin-bottom: 10px; }
+  #intro button {
+    width: 100%; background: var(--navy); color: #fff; border: none; border-radius: 10px;
+    padding: 12px; font: inherit; font-size: 15px; font-weight: 600; cursor: pointer;
+  }
+  #updbar {
+    position: fixed; left: 12px; right: 12px; bottom: calc(70px + var(--safe-b)); z-index: 40;
+    background: var(--navy); color: #fff; border-radius: 12px; padding: 10px 14px;
+    font-size: 13.5px; box-shadow: 0 3px 12px rgba(0,0,0,.35); display: none;
+  }
+  .filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 4px; }
+  .flt {
+    display: inline-flex; align-items: center; gap: 7px; border: 1px solid var(--line);
+    background: var(--card); border-radius: 20px; padding: 5px 12px 5px 8px;
+    font: inherit; font-size: 13px; cursor: pointer; user-select: none;
+  }
+  .flt[aria-pressed="false"] { opacity: .42; text-decoration: line-through; }
+  .flt .sw { width: 16px; height: 16px; border: 1.5px solid #fff; box-shadow: 0 0 0 1px var(--line); flex: 0 0 auto; }
+  .flt .sw.b { background: var(--blue); border-radius: 8px; }
+  .flt .sw.r { background: var(--red); border-radius: 4px; }
+  .flt .sw.h { background: #0b2a4a; border-radius: 8px; width: 12px; height: 12px; }
+  .flt .sw.sea { background: repeating-linear-gradient(45deg,#7a5,#7a5 3px,#fff 3px,#fff 6px); border-radius: 4px; }
   .tel-btn small { display: block; font-weight: 400; font-size: 12.5px; opacity: .9; }
   .tel-btn .nr { font-size: 26px; font-weight: 800; }
 
@@ -294,7 +321,7 @@
         <tr><td>1 × kurz</td><td>«Ich ändere meinen Kurs nach <b>Steuerbord</b>»</td></tr>
         <tr><td>2 × kurz</td><td>«Ich ändere meinen Kurs nach <b>Backbord</b>»</td></tr>
         <tr><td>3 × kurz</td><td>«Meine Maschine geht <b>rückwärts</b>»</td></tr>
-        <tr><td>5 × kurz (oder mehr)</td><td><b>Zweifel/Warnung:</b> «Deine Absicht ist unklar / dein Manöver reicht nicht» — Achtung!</td></tr>
+        <tr><td>5 × kurz (oder mehr)</td><td><b>Zweifel/Warnung:</b> «Absicht unklar / Manöver reicht nicht» — Achtung!</td></tr>
       </table>
       <p><small>Boote unter 12 m müssen keine Pfeife/Glocke an Bord haben, brauchen aber ein Mittel für ein wirksames Schallsignal (z.B. Drucklufthorn).</small></p>
     </div>
@@ -379,6 +406,7 @@
     </div>
 
     <div class="card">
+      <span class="lvl lvl-int">IALA A · International</span>
       <h2>Weitere Seezeichen</h2>
       <h3>Einzelgefahr</h3>
       <p>Schwarz-rot mit <b>2 schwarzen Kugeln</b> — steht <b>direkt auf</b> der Gefahr (Fels, Wrack): mit Abstand auf beliebiger Seite passieren. Feuer: <b>weiss, Blitzgruppen à 2</b> (alle 5 oder 10 s).</p>
@@ -441,9 +469,10 @@
     </div>
 
     <div class="card">
+      <span class="lvl lvl-int">KVR · International</span>
       <h2>Lichter bei Nacht (Kleinfahrzeuge)</h2>
       <table>
-        <tr><th>Was du siehst</th><th>Bedeutung</th></tr>
+        <tr><th>Sichtbares Lichterbild</th><th>Bedeutung</th></tr>
         <tr><td>Rot + Grün + weisses Hecklicht</td><td>Motorboot in Fahrt — Kurs aus Farbkombination ablesen</td></tr>
         <tr><td>Nur Rot oder nur Grün (+ Heck)</td><td>Segelboot unter Segel — ausweichen!</td></tr>
         <tr><td>Weisses Rundumlicht</td><td>Ankerlieger oder kleines Boot &lt; 7 m</td></tr>
@@ -454,7 +483,61 @@
         <img src="plaene/feuer-legende.jpg" alt="Feuer-Kennungen Zeichenerklärung (BSH)" style="aspect-ratio:1200/742;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
         <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Feuer-Kennungen lesen: Unterbrochen (Oc), Gleichtakt (Iso), Blitz (Fl), Funkel (Q), Schnelles Funkel (VQ), Blink (LFl) — BSH/BMDV «Sicherheit auf dem Wasser», 12/2023</figcaption>
       </figure>
-      <p><small>Faustregel: Siehst du <b>rot</b> (fremde Backbordseite), hat der andere Vorrang — siehst du <b>grün</b>, hast in der Regel du Vorrang. Im Zweifel: ausweichen.</small></p>
+      <p><small>Faustregel: <b>Rot</b> in Sicht (fremde Backbordseite) — der andere hat Vorrang; <b>grün</b> in Sicht — in der Regel Vorrang für das eigene Fahrzeug. Im Zweifel: ausweichen.</small></p>
+    </div>
+
+  
+    <div class="card">
+      <span class="lvl lvl-loc">Lokal: Golf</span>
+      <h2>Nachtanfahrt der Häfen im Golf</h2>
+      <p>Jede Einfahrt ist ein Tor aus zwei Feuern: <b>rot</b> auf der einen, <b>grün</b> auf der anderen Seite — von See kommend rot links, grün rechts liegen lassen, mittendurch.</p>
+      <div class="callout info">
+        <b>Rhythmus und Farbe:</b> Beide Feuer einer Einfahrt blinken im selben Rhythmus und bilden ein Paar. Der Rhythmus unterscheidet die Häfen, die Farbe die Seiten.
+      </div>
+      <table>
+        <tr><th>Hafen</th><th>Rotes Feuer (links lassen)</th><th>Grünes Feuer (rechts lassen)</th><th>Rhythmus</th></tr>
+        <tr>
+          <td><b>Saint-Tropez</b><br><small>43°16,4'N 6°38,0'E</small></td>
+          <td>Nordmole «Phare rouge»<br>Iso.<b>WR</b>.4s 15 m 13/9 sm</td>
+          <td>Südmole «Phare vert»<br>Iso.G.4s 3 m 4 sm</td>
+          <td>Gleichtakt 4 s — ruhig, weithin sichtbar</td>
+        </tr>
+        <tr>
+          <td><b>Sainte-Maxime</b><br><small>43°18,3'N 6°38,3'E</small></td>
+          <td>Westmole<br>Q.R.1,2s 8 m 8 sm</td>
+          <td>Südmole (Pylon, Flaggenmast)<br>Q.G.1,2s 8 m 8 sm</td>
+          <td>Funkeln 1,2 s — deutlich schneller als alle anderen</td>
+        </tr>
+        <tr>
+          <td><b>Port Grimaud</b><br><small>43°16,3'N 6°35,3'E</small></td>
+          <td>Süd-Buhne<br>Fl.R.4s 7 m 6 sm</td>
+          <td>Nordmole<br>Fl.G.4s 7 m 8 sm</td>
+          <td>Einzelblitz alle 4 s</td>
+        </tr>
+        <tr>
+          <td><b>Giscle-Einfahrt</b><br><small>→ Port Cogolin</small></td>
+          <td colspan="2">Einzelnes weisses Feuer auf den Felsblöcken von Cogolin: Q.W 6 m 3 sm — von See kommend an Steuerbord liegen lassen</td>
+          <td>Weisses Funkeln — kein Farbenpaar</td>
+        </tr>
+        <tr>
+          <td><b>Marines de Cogolin</b><br><small>43°16,1'N 6°35,5'E</small></td>
+          <td>Hauptmole<br>Fl(2)R.6s 7 m 8 sm</td>
+          <td>Gegenmole Brigantine<br>Fl(2)G.6s 3 m 3 sm</td>
+          <td>Doppelblitz alle 6 s</td>
+        </tr>
+      </table>
+      <h3>Einfahren</h3>
+      <ul>
+        <li><b>Saint-Tropez:</b> 50 m breit, WSW–ENE, 4–5 m tief. Vorher VHF 9 rufen. Bei starkem Mistral schwierig (Schwell und Rückschwall).</li>
+        <li><b>Sainte-Maxime:</b> 60 m breit, West–Ost, 5–7 m tief. Hafen nicht gegen Mistral geschützt.</li>
+        <li><b>Port Grimaud:</b> Kanal 50 m breit, Ost–West, auf 3 m gebaggert. Bei starkem Ostwind schwierig.</li>
+        <li><b>Marines de Cogolin:</b> rotes Doppelblitzfeuer ansteuern und beim Einfahren an Backbord lassen. Einfahrt Nord–Süd, 80 m breit, 5 m tief, grosse Schwojzone dahinter.</li>
+        <li><b>Giscle / Port Cogolin:</b> Hafeneinfahrt Marines de Cogolin an Backbord und das weisse Feuer an Steuerbord lassen; der Giscle rund 0,8 sm folgen — Hafen liegt backbord. Zufahrt SSO, 40 m breit, auf 2 m gebaggert, max. 3 kn. Bei Ostwind Brecher an der Zufahrt.</li>
+      </ul>
+      <div class="callout">
+        <b>Gilt auch nachts:</b> 5 kn in der 300-m-Zone, im Hafen 3 kn. Die Fährlinie Saint-Tropez–Sainte-Maxime kreuzt den Golf. Im Zufahrtskanal weder stoppen noch ankern. Ankerlieger zeigen nur ein weisses Rundumlicht — leicht zu übersehen.
+      </div>
+      <span class="src">Quelle Feuer-Kennungen und Einfahrten: Bloc Marine / Figaro Nautisme, Hafeninformationen Stand 2026 (nautisches Standardwerk, nicht amtlich) · Anfahrt Giscle: Ortskenntnis · Kennungen lesen: Karte «Lichter bei Nacht» · Verbindlich: SHOM-Seekarte 7407</span>
     </div>
 
   </section>
@@ -463,17 +546,28 @@
     <div class="card">
       <span class="lvl lvl-loc">Lokal: Golf-Gemeinden</span>
       <h2>Satellitenansicht mit Zonen-Markern</h2>
-      <p><small>Amtliche Orthofotos (IGN Géoplateforme). Braucht beim ersten Anschauen Internet — bereits geladene Kacheln bleiben offline verfügbar. <b style="color:var(--blue)">Blau</b> = Badezonen/Kanäle, <b style="color:var(--red)">rot</b> = Verbotszonen, dunkel = Häfen. Positionen ungefähr — massgebend sind die Bojen vor Ort.</small></p>
-      <div class="zoombar" id="zoombar">
-        <button data-z="13">Übersicht</button>
-        <button data-z="15">Mittel</button>
-        <button data-z="16">Detail</button>
+      <p><small>Amtliche Orthofotos (IGN Géoplateforme), optional mit Seezeichen von OpenSeaMap. Braucht beim ersten Anschauen Internet — bereits geladene Kacheln bleiben offline verfügbar. <b>Marker antippen</b> springt zum Abschnitt des Orts.</small></p>
+      <div class="mapbar">
+        <button id="fit">Ganzer Golf</button>
+        <span id="zinfo"></span>
+        <span id="coord">Karte antippen für Koordinaten</span>
       </div>
       <div id="satwrap">
         <div id="satmap"></div>
-        <span class="sat-attrib">© IGN / Géoplateforme — Orthophotos, Licence Ouverte</span>
+        <div id="satmarkers"></div>
+        <div class="zoombtns">
+          <button id="zin" aria-label="Vergrössern">+</button>
+          <button id="zout" aria-label="Verkleinern">–</button>
+        </div>
+        <span class="sat-attrib">© IGN / Géoplateforme · Seezeichen © OpenSeaMap / OSM-Mitwirkende (ODbL)</span>
       </div>
-      <p><small><b>Marker antippen</b> springt zum Abschnitt des Orts — mit Regeln und amtlichem Kartenausschnitt direkt beieinander. Tipp: Mit dem Finger verschieben; wenn Kacheln grau bleiben, Internetverbindung prüfen.</small></p>
+      <div class="filters">
+        <button class="flt" id="flt-b" aria-pressed="true"><span class="sw b"></span>Badezonen &amp; Kanäle</button>
+        <button class="flt" id="flt-r" aria-pressed="true"><span class="sw r"></span>Verbotszonen</button>
+        <button class="flt" id="flt-h" aria-pressed="true"><span class="sw h"></span>Häfen</button>
+        <button class="flt" id="flt-sea" aria-pressed="true"><span class="sw sea"></span>Seezeichen</button>
+      </div>
+      <p><small>Zoomen: Mausrad, zwei Finger oder +/–. Ziehen verschiebt, Doppeltipp zoomt. Positionen der Marker geprüft — massgebend bleiben die Bojen vor Ort.</small></p>
     </div>
 
     <div class="card">
@@ -508,7 +602,7 @@
         <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Übersicht ganze Gemeinde (Annexe I)</figcaption>
       </figure>
       <div class="loc" id="loc-1">
-      <h3><span class="chip b">1</span> La Croisette</h3>
+      <h3><span class="chip b">1</span> Plage de la Croisette</h3>
       <ul>
         <li>Zufahrt nur durch Kanal 3 (Motorboote, 20×100 m); Kanal 4 ist den Rettungsbooten vorbehalten.</li>
         <li>Badezonen ZRUB 1b und 2b gelten <b>ganzjährig</b>.</li>
@@ -523,7 +617,7 @@
       </figure>
       </div>
       <div class="loc" id="loc-2">
-      <h3><span class="chip b">2</span> Centre-Ville / Hafen</h3>
+      <h3><span class="chip b">2</span> Plage du Centre Ville</h3>
       <ul>
         <li>110 m breiter Hafen-Zufahrtskanal 7 bis zur 300-m-Linie.</li>
         <li>Westlich davon ZIEM 1m (210×100 m, Motorverbot), Préconil-Mündung bis Pointe de la Croisette.</li>
@@ -534,7 +628,7 @@
       </figure>
       </div>
       <div class="loc" id="loc-A">
-      <h3><span class="chip r">A</span> La Madrague — ZIEM</h3>
+      <h3><span class="chip r">A</span> Plage de la Madrague — ZIEM</h3>
       <ul>
         <li>ZIEM 2m über die ganze Strandbreite (660×100 m) — Motorboote komplett verboten.</li>
       </ul>
@@ -544,22 +638,28 @@
       </figure>
       </div>
       <div class="loc" id="loc-B">
-      <h3><span class="chip r">B</span> Pointe des Sardinaux — ZIEM + Insel-Sperrzone</h3>
+      <h3><span class="chip r">B</span> Plage des Sardinaux — ZIEM</h3>
       <ul>
-        <li>ZIEM 3m nördlich der Pointe (450×220 m); Tauchen vom Ufer aus hier ausnahmsweise erlaubt.</li>
-        <li>Um die Tourelle des Sardinaux: Navigations-/Ankersperrzone bis 15.09.2026 (AP 46/2026) und 5 kn im 300-m-Radius (AP 11/95).</li>
+        <li>ZIEM 3m nördlich der Pointe (450×220 m) — Motorboote verboten; Tauchen vom Ufer aus hier ausnahmsweise erlaubt.</li>
       </ul>
       <figure style="margin:8px 0 4px">
         <img src="plaene/sm-sardinaux.jpg" alt="Annexe V" style="aspect-ratio:1050/808;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
         <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Annexe V</figcaption>
       </figure>
+      </div>
+      <div class="loc" id="loc-C">
+      <h3><span class="chip r">C</span> Tourelle de la Sèche à l'Huile / des Sardinaux — Sperrzone</h3>
+      <ul>
+        <li>Rund um die Tourelle: Navigations- und Ankersperrzone <b>bis 15.09.2026</b> (AP 46/2026) — liegt deutlich weiter draussen als die Strandzone B.</li>
+        <li>Zusätzlich max. 5 kn im 300-m-Radius um die Tourelle (AP 11/95).</li>
+      </ul>
       <figure style="margin:8px 0 4px">
         <img src="plaene/sm-tourelle-sardinaux.jpg" alt="Annexe V bis — Tourelle des Sardinaux" style="aspect-ratio:1050/808;height:auto;width:100%;border-radius:10px;border:1px solid var(--line)">
         <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Annexe V bis — Tourelle des Sardinaux</figcaption>
       </figure>
       </div>
       <div class="loc" id="loc-3">
-      <h3><span class="chip b">3</span> La Nartelle</h3>
+      <h3><span class="chip b">3</span> Plage de la Nartelle</h3>
       <ul>
         <li>Kanäle 8–11: Nr. 8 auch Jetski + eFoil, Nr. 11 auch Jetski, Nr. 10 Motorboote + Rettung, Nr. 9 Motorboote.</li>
         <li>Dazwischen ZIEM 4m und 5m; Jetski-Ankerplätze beidseits von Kanal 8; Badezone ZRUB 6b ganzjährig.</li>
@@ -573,8 +673,8 @@
         <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Annexe VI bis — Badezonen</figcaption>
       </figure>
       </div>
-      <div class="loc" id="loc-C">
-      <h3><span class="chip r">C</span> Les Éléphants — ZIEM</h3>
+      <div class="loc" id="loc-D">
+      <h3><span class="chip r">D</span> Plage des Éléphants — ZIEM</h3>
       <ul>
         <li>ZIEM 6m über die ganze Strandbreite (395×80 m) — Motorboote komplett verboten.</li>
       </ul>
@@ -584,7 +684,7 @@
       </figure>
       </div>
       <div class="loc" id="loc-4">
-      <h3><span class="chip b">4</span> La Garonnette</h3>
+      <h3><span class="chip b">4</span> Plage de la Garonnette</h3>
       <ul>
         <li>Kanäle 12 (auch Jetski/eFoil), 13 (Rettung) und 15; ZIEM 7m (75×80 m); Jetski-Ankerplatz.</li>
       </ul>
@@ -593,13 +693,13 @@
         <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">Annexe VIII</figcaption>
       </figure>
       </div>
-      <span class="src">Quelle: AP 168/2026, Art. 1–6 + Annexes I–VIII · Insel-Sperrzone: AP 46/2026</span>
+      <span class="src">Quelle: AP 168/2026, Art. 1–6 + Annexes I–VIII · Sperrzone Tourelle: AP 46/2026 · Strandnamen und Positionen vor Ort verifiziert</span>
     </div>
     <div class="card">
       <span class="lvl lvl-loc">Lokal: Gemeinde</span>
       <h2>Grimaud — Westufer (AP 242/2024 vom 28.06.2024)</h2>
       <div class="loc" id="loc-5">
-      <h3><span class="chip b">5</span> Port-Grimaud-Strand</h3>
+      <h3><span class="chip b">5</span> Plage de Grimaud</h3>
       <ul>
         <li>Kanal 1 (40×300 m, auch Jetski) + Rettungskanal (15×300 m); Jetski-Ankerplatz der Basis.</li>
       </ul>
@@ -609,7 +709,7 @@
       </figure>
       </div>
       <div class="loc" id="loc-6">
-      <h3><span class="chip b">6</span> Saint-Pons / Les Mûres / Gros Pin</h3>
+      <h3><span class="chip b">6</span> Plage de Saint-Pons / les Mûres / Gros Pin</h3>
       <ul>
         <li>Kanäle 2–5 (alle auch Jetski-Transit); Kanal 5 beim Gros Pin; ZIEM J bis zum Strandende.</li>
         <li>Private Bojenfelder (AOT 1/1bis) seeseitig — Festmachen nur mit Bewilligung des Präfekten.</li>
@@ -624,7 +724,7 @@
       </figure>
       </div>
       <div class="loc" id="loc-7">
-      <h3><span class="chip b">7</span> Beauvallon / Vieux Moulin</h3>
+      <h3><span class="chip b">7</span> Plage de Beauvallon / Vieux Moulin</h3>
       <ul>
         <li>Kanäle 6 + 7, ZIEM L (100 m tief).</li>
         <li><b>ZRUB K ganzjährig gesperrt</b> (Unterwasser-Bauwerk) — gilt auch ohne Bojen; ausserhalb der Saison als ZIEM weitergeführt.</li>
@@ -636,7 +736,7 @@
       </figure>
       </div>
       <div class="loc" id="loc-8">
-      <h3><span class="chip b">8</span> Guerrevieille / Les Cigales</h3>
+      <h3><span class="chip b">8</span> Plage de Guerrevieille</h3>
       <ul>
         <li>Kanal 8, ZIEM P und Q, Bojenfelder AOT 5/6.</li>
       </ul>
@@ -663,7 +763,7 @@
         <figcaption style="font-size:11.5px;color:var(--muted);margin-top:2px">5-kn-Zone Rabiou–Capon + AOT-Coffre «MY SYMPHONY» (Annexe II)</figcaption>
       </figure>
       <div class="loc" id="loc-9">
-      <h3><span class="chip b">9</span> La Bouillabaisse / Le Pilon</h3>
+      <h3><span class="chip b">9</span> Plage de la Bouillabaisse / du Pilon</h3>
       <ul>
         <li>Kanäle 1 (20×300 m) und 6 (25×300 m — <b>einziger Jetski-Kanal der Gemeinde</b>); 200 m breiter Hafen-Zufahrtskanal 8.</li>
         <li>Ankerverbotszonen ZIM 5 und 7 westlich des Hafens; Bojenfeld AOT 1.</li>
@@ -674,7 +774,7 @@
       </figure>
       </div>
       <div class="loc" id="loc-10">
-      <h3><span class="chip b">10</span> Baie des Canoubiers</h3>
+      <h3><span class="chip b">10</span> Baie des Canebiers</h3>
       <ul>
         <li><b>Ganze Bucht 5-kn-Zone</b>, weit über die 300 m hinaus (gelbe Bojenlinie — siehe Tempo-Tabelle unten).</li>
         <li>Rettungskanal 16, Zufahrtskanäle 20 + 23; vier ZIEM (15/18/21/24).</li>
@@ -687,7 +787,7 @@
       </figure>
       </div>
       <div class="loc" id="loc-11">
-      <h3><span class="chip b">11</span> La Ponche / La Fontanette</h3>
+      <h3><span class="chip b">11</span> Plage de la Ponche / la Fontanette</h3>
       <ul>
         <li>Rettungskanal 11 (10×50 m) östlich der Pointe Pesquière — freihalten.</li>
       </ul>
@@ -697,7 +797,7 @@
       </figure>
       </div>
       <div class="loc" id="loc-12">
-      <h3><span class="chip b">12</span> Les Graniers</h3>
+      <h3><span class="chip b">12</span> Plage des Graniers</h3>
       <ul>
         <li>Badezonen ZRUB 12/13; Bojenfeld AOT 2 beidseits der 300-m-Linie.</li>
       </ul>
@@ -707,7 +807,7 @@
       </figure>
       </div>
       <div class="loc" id="loc-13">
-      <h3><span class="chip b">13</span> Cabine de Bain</h3>
+      <h3><span class="chip b">13</span> Plage de la Cabine des Bain</h3>
       <ul>
         <li>Badezone ZRUB 26; Bojenfeld AOT 6 seewärts der 300-m-Linie.</li>
       </ul>
@@ -717,7 +817,7 @@
       </figure>
       </div>
       <div class="loc" id="loc-14">
-      <h3><span class="chip b">14</span> La Moutte</h3>
+      <h3><span class="chip b">14</span> Plage de la Moutte</h3>
       <ul>
         <li>Kanal 28 (20×110 m) zwischen den Badezonen ZRUB 27 und 29; Bojenfeld AOT 7.</li>
       </ul>
@@ -727,7 +827,7 @@
       </figure>
       </div>
       <div class="loc" id="loc-15">
-      <h3><span class="chip b">15</span> Les Salins</h3>
+      <h3><span class="chip b">15</span> Plage des Salins</h3>
       <ul>
         <li>Kanal 30 (15×150 m) + Rettungskanal 32; Bojenfeld AOT 8 nördlich.</li>
       </ul>
@@ -739,10 +839,15 @@
       <span class="src">Quelle: AP 297/2026, Art. 1–8 + Annexes I–IX · ZIM: AP 21/2005</span>
     </div>
     <div class="card">
+      <span class="lvl lvl-loc">Lokal: Sektor</span>
       <h2>Weitere Sperrzonen &amp; Hafenzufahrten</h2>
+      <p><small>Für diese beiden Zonen existiert kein Kartenanhang — die Erlasse beschreiben sie über Koordinaten.</small></p>
       <ul>
-        <li><b>D Gassin (Marine-Werft):</b> Sperrzone Navigation/Ankern/Tauchen (AP 45/2004) — Lage ungefähr, kein Ortsplan publiziert.</li>
-        <li><b>E Abwasserleitung St-Tropez:</b> Anker- und Schleppverbot um den Émissaire (AP 977/1972) — Lage ungefähr.</li>
+        <li><b>E Naval Group Gassin (frühere DCN):</b> Navigation, Ankern und Tauchen verboten in einem Kreis von <b>0,2 sm Radius</b> um 43°15,86' N / 006°35,95' E, landseitig begrenzt bis 43°15,83' N / 006°35,70' E und Azimut 030°.
+          <b>Gilt nur bei angekündigten Erprobungen</b> (48 h Voranmeldung, höchstens 2 Tage) — und <b>zwischen 15.06. und 15.09. finden keine Erprobungen statt</b>. Im Sommer also praktisch nie aktiv (AP 45/2004).</li>
+        <li><b>F Abwasserleitung («Émissaire») St-Tropez:</b> Ankern aller Fahrzeuge und Schleppnetzfischen verboten in einem <b>300 m breiten Rechteck</b>, dessen Achse in <b>029°</b> von der Nordecke der Zitadelle von Saint-Tropez verläuft.
+          Das seeseitige Ende und die Achse markiert eine <b>rote Kugelboje</b> (ca. 1 m) auf 43°16'38" N / 006°38'52" E.
+          Wer bei höherer Gewalt dort ankert, muss die Kette mit Boje slippen und es innerhalb von 24 h melden (AP 977/1972 vom 06.11.1972).</li>
       </ul>
       <h3>Hafenzufahrten Port Grimaud &amp; Marines de Cogolin</h3>
       <ul>
@@ -816,9 +921,9 @@
     <div class="card">
       <span class="lvl lvl-med">Ganze frz. Mittelmeerküste</span>
       <h2>Die Grundregel: nur auf Sand ankern</h2>
-      <p>Die <b>Posidonia-Seegraswiesen</b> sind eine geschützte Art und bedecken weite Teile des Golfs. Der Rahmenerlass 123/2019 verbietet das Ankern überall dort, wo geschützte Meerespflanzen beschädigt werden können — <b>für jede Bootsgrösse</b>, auch für dein 7-m-Boot.</p>
+      <p>Die <b>Posidonia-Seegraswiesen</b> sind eine geschützte Art und bedecken weite Teile des Golfs. Der Rahmenerlass 123/2019 verbietet das Ankern überall dort, wo geschützte Meerespflanzen beschädigt werden können — <b>unabhängig von der Bootsgrösse</b>.</p>
       <div class="callout ok">
-        <b>So erkennst du den Grund:</b> Helle, sandfarbene Flächen = Sand → ankern OK. Dunkle Flecken = Seegras oder Fels → nicht ankern. Im Zweifel Blick über die Bordwand oder kurz mit der Badebrille prüfen, bevor der Anker fällt. Die Gratis-App <b>DONIA</b> zeigt die Sandflächen live.
+        <b>Grund erkennen:</b> Helle, sandfarbene Flächen = Sand → ankern zulässig. Dunkle Flecken = Seegras oder Fels → nicht ankern. Im Zweifel Blick über die Bordwand oder kurz mit Badebrille prüfen, bevor der Anker fällt. Die Gratis-App <b>DONIA</b> zeigt die Sandflächen live.
       </div>
       <ul>
         <li><b>Begriff:</b> «Mouillage» = Anker am Grund. Festmachen an Boje/Coffre gilt als «Arrêt» — andere Regeln.</li>
@@ -831,7 +936,7 @@
       <span class="lvl lvl-med">Ganze frz. Mittelmeerküste</span>
       <h2>Ankerdauer: max. 72 Stunden</h2>
       <ul>
-        <li>Am selben Platz darfst du <b>72 Stunden</b> ankern (entspricht einer verlässlichen Wetterprognose).</li>
+        <li>Am selben Platz ist Ankern <b>72 Stunden</b> zulässig (entspricht einer verlässlichen Wetterprognose).</li>
         <li><b>Ohne AIS</b> (Boote unter 24 m): danach weiterziehen — und <b>nicht sofort wieder im 500-m-Umkreis</b> des alten Platzes ankern.</li>
         <li><b>Mit AIS:</b> Verlängerung in eigener Verantwortung um jeweils 72 h möglich, solange die Behörde nichts anderes anordnet.</li>
         <li>Ausnahmen: Schlechtwetter, Notfall, Seenothilfe.</li>
@@ -866,7 +971,7 @@
         <li><b>ZIM</b> (Ankerverbotszonen): westlich des Hafens St-Tropez (Zonen 5 + 7, siehe Plan) und gemäss AP 21/2005.</li>
         <li>In <b>ZIEM, Badezonen (ZRUB) und allen Kanälen</b>; an Balisage-Bojen festmachen ist verboten.</li>
         <li>In <b>Hafenzufahrten</b> (St-Tropez, Ste-Maxime, Port Grimaud, Cogolin) und der Fährlinie.</li>
-        <li>Um die <b>Insel Sardinaux</b> (Sperrzone bis 15.09.2026, AP 46/2026), an der <b>Gassin-Werft</b> (AP 45/2004) und um den <b>Émissaire</b> St-Tropez (AP 977/1972).</li>
+        <li>Um die <b>Insel Sardinaux</b> (Sperrzone bis 15.09.2026, AP 46/2026), an der <b>Naval-Group-Werft Gassin</b> (AP 45/2004, nur bei Erprobungen, nie 15.06.–15.09.) und im 300-m-Rechteck um den <b>Émissaire</b> St-Tropez (AP 977/1972).</li>
         <li>Auf <b>Kabeltrassen</b> — Seekarte (SHOM 7407) prüfen.</li>
         <li>Das <b>Grossyacht-Ankerfeld</b> mitten im Golf meiden — dort schwoien 45-m-Yachten an langen Ketten.</li>
       </ul>
@@ -890,6 +995,7 @@
     </div>
 
     <div class="card">
+      <span class="lvl lvl-med">Ganze frz. Mittelmeerküste</span>
       <h2>Umwelt</h2>
       <ul>
         <li>Der Golf liegt im Walschutzgebiet <b>Pélagos</b>: min. 100 m Abstand zu Delfinen/Walen, nicht verfolgen.</li>
@@ -934,11 +1040,13 @@
     </div>
 
     <div class="card">
+      <span class="lvl lvl-fr">Frankreich national</span>
       <h2>Weiter als 6 sm hinaus?</h2>
       <p>Ab 6 sm von einem Schutzort gilt zusätzlich die <b>Dotation semi-hauturière</b> (u.a. feste VHF, Rettungsinsel, Westen Niveau 150). Das liegt ausserhalb des Reviers dieser App — vor einem solchen Törn die Division 240 separat prüfen.</p>
     </div>
 
     <div class="card">
+      <span class="lvl lvl-fr">Frankreich national</span>
       <h2>Rettungswesten richtig wählen</h2>
       <table>
         <tr><th>Niveau</th><th>Einsatz</th></tr>
@@ -1022,18 +1130,24 @@
   </section>
 
   <footer>
-    <b>Amtliche Quellen dieser Zusammenstellung (Stand Juli 2026):</b><br>
-    KVR/RIPAM (London 20.10.1972, Décret n°77-733) ·
-    Division 240 (Arrêté 23.11.1987 i.d.F. vom 21.05.2026) und Fiche mer.gouv.fr ·
-    AP n°109/2024 (Schifffahrt/Aktivitäten, ganze frz. Mittelmeerküste) ·
-    AP n°123/2019 (Anker-Rahmen) ·
-    AP n°11/95 (Tempo im Golf) · AP n°77/2025 (Ankerdauer) · Balisage-Erlasse der Golf-Gemeinden (jährlich) ·
-    Décret n°2026-434 (Alkohol/Geschwindigkeit).<br><br>
-    Private Zusammenstellung ohne Gewähr — massgebend sind allein die amtlichen Texte.
-    Vor Saisonstart aktuelle Erlasse und Plans de balisage prüfen: premar-mediterranee.gouv.fr
+    Private Zusammenstellung ohne Gewähr · keine Navigationsgrundlage — massgebend sind die
+    amtlichen Texte und die Betonnung vor Ort.<br>
+    <a href="./info.html" style="font-weight:600">Info, Quellen und Rechtliches</a><br>
+    <span id="appver"></span>
   </footer>
 </main>
 
+<div id="intro" role="dialog" aria-modal="true" aria-labelledby="introtitle">
+  <div class="box">
+    <h2 id="introtitle">Bitte einmal lesen</h2>
+    <p>Diese App ist eine <b>private, nicht amtliche</b> Zusammenstellung <b>ohne Gewähr</b> und
+    <b>keine Navigationsgrundlage</b>. Massgebend sind allein die amtlichen Texte sowie die
+    Beschilderung und Betonnung vor Ort.</p>
+    <p><a href="./info.html">Haftungsausschluss, Quellen und Datenschutz</a></p>
+    <button id="introok">Verstanden</button>
+  </div>
+</div>
+<div id="updbar">Neue Version gefunden — die App aktualisiert sich in wenigen Sekunden …</div>
 <nav id="tabbar"></nav>
 
 <script>
@@ -1110,120 +1224,252 @@ document.getElementById('reset-checks').onclick = () => {
   renderChecklist('cotier', 'chk-cotier');
   };
 
-// ---------- Satellitenkarte (IGN Géoplateforme Orthophotos, WMTS/WebMercator) ----------
+// ---------- Satellitenkarte: IGN-Orthofotos + optional OpenSeaMap, stufenlos zoombar ----------
 const SAT_BBOX = { latMin: 43.245, latMax: 43.345, lonMin: 6.560, lonMax: 6.710 };
 const SAT_MARKERS = [
   // [Label, Typ b=Badezone/Kanal r=Verbot h=Hafen, Lat, Lon, Beschreibung, Ziel-Abschnitt]
-  ['1','b',43.3006,6.6259,'La Croisette','loc-1'],
-  ['2','b',43.3067,6.6415,'Centre-Ville / Hafen Ste-Maxime','loc-2'],
-  ['3','b',43.3209,6.6651,'La Nartelle','loc-3'],
-  ['4','b',43.3415,6.6810,'La Garonnette','loc-4'],
-  ['5','b',43.2775,6.5825,'Port-Grimaud-Strand','loc-5'],
-  ['6','b',43.2815,6.5843,'Saint-Pons / Les Mûres / Gros Pin','loc-6'],
-  ['7','b',43.2866,6.6000,'Beauvallon / Vieux Moulin','loc-7'],
-  ['8','b',43.2925,6.6110,'Guerrevieille / Les Cigales','loc-8'],
-  ['9','b',43.2643,6.6252,'La Bouillabaisse / Le Pilon','loc-9'],
-  ['10','b',43.2700,6.6655,'Baie des Canoubiers (5-kn-Zone!)','loc-10'],
-  ['11','b',43.2733,6.6420,'La Ponche / La Fontanette','loc-11'],
-  ['12','b',43.2705,6.6480,'Les Graniers','loc-12'],
-  ['13','b',43.2715,6.6740,'Cabine de Bain','loc-13'],
-  ['14','b',43.2680,6.6800,'La Moutte','loc-14'],
-  ['15','b',43.2610,6.6860,'Les Salins','loc-15'],
-  ['A','r',43.3133,6.6581,'ZIEM La Madrague','loc-A'],
-  ['B','r',43.3176,6.6687,'ZIEM Sardinaux + Insel-Sperrzone','loc-B'],
-  ['C','r',43.3323,6.6689,'ZIEM Les Éléphants','loc-C'],
-  ['D','r',43.2650,6.5950,'Sperrzone Gassin-Werft (AP 45/2004, Lage ungefähr)',null],
-  ['E','r',43.2660,6.6300,'Ankerverbot Émissaire (AP 977/1972, Lage ungefähr)',null],
+  // Strandpositionen vor Ort verifiziert; E/F aus den Erlass-Koordinaten
+  ['1','b',43.3017,6.6273,'Plage de la Croisette','loc-1'],
+  ['2','b',43.3073,6.6360,'Plage du Centre Ville','loc-2'],
+  ['3','b',43.3208,6.6657,'Plage de la Nartelle','loc-3'],
+  ['4','b',43.3406,6.6808,'Plage de la Garonnette','loc-4'],
+  ['5','b',43.2747,6.5845,'Plage de Grimaud','loc-5'],
+  ['6','b',43.2815,6.5890,'Plage de Saint-Pons / les Mûres / Gros Pin','loc-6'],
+  ['7','b',43.2873,6.6041,'Plage de Beauvallon / Vieux Moulin','loc-7'],
+  ['8','b',43.2909,6.6101,'Plage de Guerrevieille','loc-8'],
+  ['9','b',43.2661,6.6242,'Plage de la Bouillabaisse / du Pilon','loc-9'],
+  ['10','b',43.2707,6.6632,'Baie des Canebiers (5-kn-Zone!)','loc-10'],
+  ['11','b',43.2742,6.6415,'Plage de la Ponche / la Fontanette','loc-11'],
+  ['12','b',43.2708,6.6483,'Plage des Graniers','loc-12'],
+  ['13','b',43.2752,6.6821,'Plage de la Cabine des Bain','loc-13'],
+  ['14','b',43.2667,6.6969,'Plage de la Moutte','loc-14'],
+  ['15','b',43.2596,6.6927,'Plage des Salins','loc-15'],
+  ['A','r',43.3130,6.6585,'Plage de la Madrague — ZIEM','loc-A'],
+  ['B','r',43.3142,6.6721,'Plage des Sardinaux — ZIEM','loc-B'],
+  ['C','r',43.3126,6.6861,'Tourelle Sèche à l\'Huile / des Sardinaux — Sperrzone','loc-C'],
+  ['D','r',43.3311,6.6689,'Plage des Éléphants — ZIEM','loc-D'],
+  ['E','r',43.2643,6.5992,'Sperrzone Naval Group Gassin — 0,2 sm Radius, nur bei angekündigten Erprobungen, nie 15.06.–15.09. (AP 45/2004)',null],
+  ['F','r',43.2772,6.6478,'Rote Kugelboje Émissaire St-Tropez — Ankern und Schleppnetze verboten im 300-m-Rechteck, Achse 029° ab Nordecke der Zitadelle (AP 977/1972)',null],
   ['','h',43.2727,6.6391,'Hafen Saint-Tropez (VHF 9)',null],
   ['','h',43.3067,6.6403,'Hafen Sainte-Maxime (VHF 9)',null],
   ['','h',43.2750,6.5800,'Port Grimaud (VHF 9)',null],
   ['','h',43.2655,6.5870,'Marines de Cogolin (VHF 9)',null]
 ];
-// WebMercator: Grad -> globale Pixel bei Zoom z
-function mercPx(lat, lon, z) {
-  const n = 256 * Math.pow(2, z);
-  const x = (lon + 180) / 360 * n;
-  const r = lat * Math.PI / 180;
-  const y = (1 - Math.log(Math.tan(r) + 1 / Math.cos(r)) / Math.PI) / 2 * n;
-  return [x, y];
+const MINZ = 12, MAXZ = 18;
+const swrap = document.getElementById('satwrap'), smap = document.getElementById('satmap'),
+      smk = document.getElementById('satmarkers'), zinfo = document.getElementById('zinfo');
+let z = 13, sc = 1, tx = 0, ty = 0, org = [0, 0], seaOn = true;
+const showKind = { b: true, r: true, h: true };
+
+function mercPx(lat, lon, zz) {
+  const n = 256 * Math.pow(2, zz), r = lat * Math.PI / 180;
+  return [(lon + 180) / 360 * n, (1 - Math.log(Math.tan(r) + 1 / Math.cos(r)) / Math.PI) / 2 * n];
 }
-function buildSat(z) {
-  const map = document.getElementById('satmap');
-  const wrap = document.getElementById('satwrap');
-  if (!map) return;
-  const [x0, y1] = mercPx(SAT_BBOX.latMax, SAT_BBOX.lonMin, z); // oben links
-  const [x1, y0] = mercPx(SAT_BBOX.latMin, SAT_BBOX.lonMax, z); // unten rechts
-  const tx0 = Math.floor(x0 / 256), tx1 = Math.floor(x1 / 256);
-  const ty0 = Math.floor(y1 / 256), ty1 = Math.floor(y0 / 256);
-  const offX = tx0 * 256 - x0, offY = ty0 * 256 - y1;
-  map.style.width = (x1 - x0) + 'px';
-  map.style.height = (y0 - y1) + 'px';
-  map.querySelectorAll('img, .sat-marker, .sat-zone').forEach(el => el.remove());
-  for (let tx = tx0; tx <= tx1; tx++) {
-    for (let ty = ty0; ty <= ty1; ty++) {
-      const img = document.createElement('img');
-      img.loading = 'lazy';
-      img.alt = '';
-      img.src = 'https://data.geopf.fr/wmts?layer=ORTHOIMAGERY.ORTHOPHOTOS&style=normal'
-        + '&tilematrixset=PM&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg'
-        + '&TileMatrix=' + z + '&TileCol=' + tx + '&TileRow=' + ty;
-      img.style.left = (offX + (tx - tx0) * 256) + 'px';
-      img.style.top  = (offY + (ty - ty0) * 256) + 'px';
-      img.onerror = () => { img.style.background = '#123a63'; };
-      map.appendChild(img);
+function pxToLatLon(px, py) {
+  const n = 256 * Math.pow(2, z);
+  const lon = (org[0] + px) / n * 360 - 180;
+  const y = (org[1] + py) / n;
+  return [Math.atan(Math.sinh(Math.PI * (1 - 2 * y))) * 180 / Math.PI, lon];
+}
+function buildTiles() {
+  const [x0, y1] = mercPx(SAT_BBOX.latMax, SAT_BBOX.lonMin, z);
+  const [x1, y0] = mercPx(SAT_BBOX.latMin, SAT_BBOX.lonMax, z);
+  org = [x0, y1];
+  smap.innerHTML = '';
+  smap.style.width = (x1 - x0) + 'px';
+  smap.style.height = (y0 - y1) + 'px';
+  const cx0 = Math.floor(x0 / 256), cx1 = Math.floor(x1 / 256),
+        cy0 = Math.floor(y1 / 256), cy1 = Math.floor(y0 / 256);
+  for (let X = cx0; X <= cx1; X++) for (let Y = cy0; Y <= cy1; Y++) {
+    const px = X * 256 - x0, py = Y * 256 - y1;
+    const a = document.createElement('img');
+    a.src = 'https://data.geopf.fr/wmts?layer=ORTHOIMAGERY.ORTHOPHOTOS&style=normal&tilematrixset=PM'
+      + '&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fjpeg'
+      + '&TileMatrix=' + z + '&TileCol=' + X + '&TileRow=' + Y;
+    a.alt = ''; a.style.left = px + 'px'; a.style.top = py + 'px';
+    a.onerror = () => { a.style.background = '#123a63'; };
+    smap.appendChild(a);
+    if (seaOn) {
+      const b = document.createElement('img');
+      b.src = 'https://tiles.openseamap.org/seamark/' + z + '/' + X + '/' + Y + '.png';
+      b.alt = ''; b.style.left = px + 'px'; b.style.top = py + 'px';
+      b.onerror = () => b.remove();
+      smap.appendChild(b);
     }
   }
-  SAT_MARKERS.forEach(([label, typ, lat, lon, info, plan]) => {
-    const [mx, my] = mercPx(lat, lon, z);
+  drawMarkers();
+}
+function drawMarkers() {
+  smk.innerHTML = '';
+  SAT_MARKERS.forEach(([label, typ, lat, lon, info, target]) => {
+    if (!showKind[typ]) return;
+    const [px, py] = mercPx(lat, lon, z);
     const el = document.createElement('div');
     el.className = 'sat-marker ' + typ;
     el.textContent = label;
     el.title = info;
-    el.style.left = (mx - x0) + 'px';
-    el.style.top = (my - y1) + 'px';
-    el.onclick = () => {
-      if (plan) {
-        const fig = document.getElementById(plan);
-        if (fig) {
-          fig.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          // Nachkorrektur, falls nachladende Bilder die Seite verschoben haben
-          setTimeout(() => { fig.scrollIntoView({ block: 'start' }); }, 700);
-          fig.style.outline = '3px solid var(--blue)';
-          fig.style.borderRadius = '12px';
-          setTimeout(() => { fig.style.outline = 'none'; }, 2500);
+    el.dataset.lx = px - org[0];
+    el.dataset.ly = py - org[1];
+    el.onclick = (e) => {
+      e.stopPropagation();
+      if (target) {
+        const sec = document.getElementById(target);
+        if (sec) {
+          sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          setTimeout(() => { sec.scrollIntoView({ block: 'start' }); }, 700);
+          sec.style.outline = '3px solid var(--blue)';
+          sec.style.borderRadius = '12px';
+          setTimeout(() => { sec.style.outline = 'none'; }, 2500);
           return;
         }
       }
-      if (info) alert(info);
+      alert(info);
     };
-    map.appendChild(el);
+    smk.appendChild(el);
   });
-  document.querySelectorAll('#zoombar button').forEach(b =>
-    b.classList.toggle('active', +b.dataset.z === z));
-  // Auf Golfmitte zentrieren
-  const [cx, cy] = mercPx(43.292, 6.630, z);
-  wrap.scrollLeft = cx - x0 - wrap.clientWidth / 2;
-  wrap.scrollTop = cy - y1 - wrap.clientHeight / 2;
+  place();
 }
-document.querySelectorAll('#zoombar button').forEach(b =>
-  b.onclick = () => buildSat(+b.dataset.z));
-// Erst bauen, wenn der Karten-Tab erstmals geöffnet wird (spart Daten)
+function place() {
+  smap.style.transform = 'translate(' + tx + 'px,' + ty + 'px) scale(' + sc + ')';
+  [...smk.children].forEach(el => {
+    el.style.left = (tx + sc * el.dataset.lx) + 'px';
+    el.style.top = (ty + sc * el.dataset.ly) + 'px';
+  });
+  zinfo.textContent = 'Zoom ' + (z + Math.log2(sc)).toFixed(1);
+}
+function zoomAt(cx, cy, factor) {
+  const ns = sc * factor;
+  const eff = z + Math.log2(ns);
+  if (eff < MINZ || eff > MAXZ) return;
+  tx = cx - (cx - tx) * (ns / sc); ty = cy - (cy - ty) * (ns / sc); sc = ns;
+  while (sc > 1.5 && z < MAXZ) { sc /= 2; z++; buildTiles(); }
+  while (sc < 0.75 && z > MINZ) { sc *= 2; z--; buildTiles(); }
+  place();
+}
+function fitMap() {
+  z = 13; sc = 1;
+  buildTiles();
+  const w = smap.offsetWidth || 1, h = smap.offsetHeight || 1;
+  sc = Math.min(swrap.clientWidth / w, swrap.clientHeight / h);
+  if (!isFinite(sc) || sc <= 0) sc = 1;
+  tx = (swrap.clientWidth - w * sc) / 2;
+  ty = (swrap.clientHeight - h * sc) / 2;
+  place();
+}
+swrap.addEventListener('wheel', e => {
+  e.preventDefault();
+  const r = swrap.getBoundingClientRect();
+  zoomAt(e.clientX - r.left, e.clientY - r.top, e.deltaY < 0 ? 1.15 : 1 / 1.15);
+}, { passive: false });
+const ptrs = new Map();
+let lastDist = null, dragged = false;
+swrap.addEventListener('pointerdown', e => {
+  swrap.setPointerCapture(e.pointerId); ptrs.set(e.pointerId, e);
+  swrap.classList.add('drag'); lastDist = null; dragged = false;
+});
+swrap.addEventListener('pointermove', e => {
+  if (!ptrs.has(e.pointerId)) return;
+  const prev = ptrs.get(e.pointerId); ptrs.set(e.pointerId, e);
+  dragged = true;
+  const r = swrap.getBoundingClientRect();
+  if (ptrs.size === 1) { tx += e.clientX - prev.clientX; ty += e.clientY - prev.clientY; place(); }
+  else if (ptrs.size === 2) {
+    const [p1, p2] = [...ptrs.values()];
+    const d = Math.hypot(p1.clientX - p2.clientX, p1.clientY - p2.clientY);
+    const cx = (p1.clientX + p2.clientX) / 2 - r.left, cy = (p1.clientY + p2.clientY) / 2 - r.top;
+    if (lastDist) zoomAt(cx, cy, d / lastDist);
+    lastDist = d;
+  }
+});
+['pointerup', 'pointercancel', 'pointerleave'].forEach(ev => swrap.addEventListener(ev, e => {
+  ptrs.delete(e.pointerId);
+  if (ptrs.size < 2) lastDist = null;
+  if (!ptrs.size) swrap.classList.remove('drag');
+}));
+swrap.addEventListener('dblclick', e => {
+  const r = swrap.getBoundingClientRect();
+  zoomAt(e.clientX - r.left, e.clientY - r.top, 1.8);
+});
+swrap.addEventListener('click', e => {
+  if (dragged || e.target.classList.contains('sat-marker')) return;
+  const r = swrap.getBoundingClientRect();
+  const [lat, lon] = pxToLatLon((e.clientX - r.left - tx) / sc, (e.clientY - r.top - ty) / sc);
+  document.getElementById('coord').textContent = lat.toFixed(4) + ' N, ' + lon.toFixed(4) + ' E';
+});
+document.getElementById('zin').onclick = () => zoomAt(swrap.clientWidth / 2, swrap.clientHeight / 2, 1.5);
+document.getElementById('zout').onclick = () => zoomAt(swrap.clientWidth / 2, swrap.clientHeight / 2, 1 / 1.5);
+document.getElementById('fit').onclick = fitMap;
+function fltToggle(id, fn) {
+  const btn = document.getElementById(id);
+  btn.onclick = () => {
+    const on = btn.getAttribute('aria-pressed') !== 'true';
+    btn.setAttribute('aria-pressed', on);
+    fn(on);
+  };
+}
+fltToggle('flt-b', on => { showKind.b = on; drawMarkers(); });
+fltToggle('flt-r', on => { showKind.r = on; drawMarkers(); });
+fltToggle('flt-h', on => { showKind.h = on; drawMarkers(); });
+fltToggle('flt-sea', on => { seaOn = on; buildTiles(); });
+// Karte erst aufbauen, wenn der Tab erstmals geöffnet wird (spart Daten)
 let satBuilt = false;
 const origShowTab = showTab;
 showTab = function (id) {
   origShowTab(id);
-  if (id === 'karte' && !satBuilt) { satBuilt = true; buildSat(13); }
+  if (id === 'karte' && !satBuilt) { satBuilt = true; fitMap(); }
 };
-// Falls die App direkt im Karten-Tab startet
 if (document.getElementById('panel-karte').classList.contains('active')) {
-  satBuilt = true; buildSat(13);
+  satBuilt = true; fitMap();
 }
 
+// ---------- Einmaliger Hinweis pro Gerät ----------
+(function () {
+  const KEY = 'introOk';
+  let seen = false;
+  try { seen = localStorage.getItem(KEY) === '1'; } catch (e) {}
+  const box = document.getElementById('intro');
+  if (!box) return;
+  if (!seen) box.classList.add('on');
+  document.getElementById('introok').onclick = () => {
+    box.classList.remove('on');
+    try { localStorage.setItem(KEY, '1'); } catch (e) {}
+  };
+})();
+
+// ---------- Version und Update-Erkennung ----------
+const APP_VERSION = 'v44';
+const verEl = document.getElementById('appver');
+if (verEl) verEl.textContent = 'App-Version ' + APP_VERSION;
 
 // ---------- Service Worker: macht die App offline-fähig ----------
 if ('serviceWorker' in navigator) {
+  // War beim Laden schon ein Service Worker aktiv? Nur dann ist ein Reload ein echtes Update.
+  const hadController = !!navigator.serviceWorker.controller;
+  let reloading = false;
+  function reloadSoon() {
+    if (reloading) return;
+    reloading = true;
+    const bar = document.getElementById('updbar');
+    if (bar) bar.style.display = 'block';
+    setTimeout(() => location.reload(), 3000);
+  }
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js').catch(() => {});
+    navigator.serviceWorker.register('./sw.js').then((reg) => {
+      // Neuer Service Worker wird installiert → nach Aktivierung neu laden
+      reg.addEventListener('updatefound', () => {
+        const sw = reg.installing || reg.waiting;
+        if (!sw) return;
+        sw.addEventListener('statechange', () => {
+          if (sw.state === 'activated' && hadController) reloadSoon();
+        });
+      });
+      // Bei jedem Start online auf eine neue Fassung prüfen
+      reg.update().catch(() => {});
+    }).catch(() => {});
+    // Sicherheitsnetz: übernimmt ein neuer Service Worker die Kontrolle, neu laden
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (hadController) reloadSoon();
+    });
   });
 }
 </script>
