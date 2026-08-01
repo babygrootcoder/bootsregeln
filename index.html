@@ -177,6 +177,11 @@
     width: 100%; background: var(--navy); color: #fff; border: none; border-radius: 10px;
     padding: 12px; font: inherit; font-size: 15px; font-weight: 600; cursor: pointer;
   }
+  #okbar {
+    position: fixed; left: 12px; right: 12px; bottom: calc(70px + var(--safe-b)); z-index: 41;
+    background: #1e8f4e; color: #fff; border-radius: 12px; padding: 10px 14px;
+    font-size: 13.5px; box-shadow: 0 3px 12px rgba(0,0,0,.35); display: none;
+  }
   #updbar {
     position: fixed; left: 12px; right: 12px; bottom: calc(70px + var(--safe-b)); z-index: 40;
     background: var(--navy); color: #fff; border-radius: 12px; padding: 10px 14px;
@@ -522,7 +527,7 @@
         </tr>
         <tr>
           <td><b>Giscle-Einfahrt</b><br><small>→ Port Cogolin</small></td>
-          <td colspan="2">Einzelnes weisses Feuer auf den Felsblöcken von Cogolin: Q.W 6 m 3 sm — von See kommend an Steuerbord liegen lassen</td>
+          <td colspan="2">Einzelnes weisses Feuer auf den Felsblöcken von Cogolin: Q.W 6 m 3 sm — von See kommend an Backbord liegen lassen</td>
           <td>Weisses Funkeln — kein Farbenpaar</td>
         </tr>
         <tr>
@@ -532,18 +537,18 @@
           <td>Doppelblitz alle 6 s</td>
         </tr>
       </table>
-      <h3>Einfahren</h3>
+      <h3>Anfahrt und Einfahrt</h3>
       <ul>
-        <li><b>Saint-Tropez:</b> 50 m breit, WSW–ENE, 4–5 m tief. Vorher VHF 9 rufen. Bei starkem Mistral schwierig (Schwell und Rückschwall).</li>
-        <li><b>Sainte-Maxime:</b> 60 m breit, West–Ost, 5–7 m tief. Hafen nicht gegen Mistral geschützt.</li>
-        <li><b>Port Grimaud:</b> Kanal 50 m breit, Ost–West, auf 3 m gebaggert. Bei starkem Ostwind schwierig.</li>
+        <li><b>Saint-Tropez:</b> Aus dem Golf der Südküste folgen; das Feuerpaar liegt am Ostrand des Ortes. Wer von aussen um die Halbinsel kommt, umfährt die Tourellen La Moutte (Ost-Kardinal, Q(3)WR.10s) und Basse Rabiou mit weitem Abstand. Einfahrt 50 m breit, WSW–ENE, 4–5 m tief. Vorher VHF 9 rufen. Bei starkem Mistral schwierig (Schwell und Rückschwall).</li>
+        <li><b>Sainte-Maxime:</b> Anfahrt aus der Golfmitte von Süden. Vor der Stadt reicht das Felsplateau der Pointe des Sardinaux rund einen Kilometer nach Osten — begrenzt von der Tourelle Les Sardinaux im Norden und der Sèche à l'Huile im Süden (Süd-Kardinal, Q(6)+LFl.WR.15s; roter Sektor = Untiefen vor der Pointe, also im weissen Sektor bleiben). Beide seewärts umfahren. Einfahrt 60 m breit, West–Ost, 5–7 m tief; die Südmole trägt den Leuchtpylon mit Flaggenmast. Hafen nicht gegen Mistral geschützt.</li>
+        <li><b>Port Grimaud:</b> Anfahrt mittig durch den Golf, bis die Steinschüttung der Hafenmolen zwischen zwei Stränden auszumachen ist. Landmarken bei Tag: Kirchturm und der weisse Signalmast der Hafenmeisterei, dahinter das Château de Grimaud. Kanal 50 m breit, Ost–West, auf 3 m gebaggert. Bei starkem Ostwind schwierig.</li>
         <li><b>Marines de Cogolin:</b> rotes Doppelblitzfeuer ansteuern und beim Einfahren an Backbord lassen. Einfahrt Nord–Süd, 80 m breit, 5 m tief, grosse Schwojzone dahinter.</li>
-        <li><b>Giscle / Port Cogolin:</b> Hafeneinfahrt Marines de Cogolin an Backbord und das weisse Feuer an Steuerbord lassen; der Giscle rund 0,8 sm folgen — Hafen liegt backbord. Zufahrt SSO, 40 m breit, auf 2 m gebaggert, max. 3 kn. Bei Ostwind Brecher an der Zufahrt.</li>
+        <li><b>Giscle / Port Cogolin:</b> Das weisse Feuer ansteuern und an Backbord liegen lassen; der Giscle rund 0,8 sm folgen — Hafen liegt backbord. Zufahrt SSO, 40 m breit, auf 2 m gebaggert, max. 3 kn. Bei Ostwind Brecher an der Zufahrt.</li>
       </ul>
       <div class="callout">
         <b>Gilt auch nachts:</b> 5 kn in der 300-m-Zone, im Hafen 3 kn. Die Fährlinie Saint-Tropez–Sainte-Maxime kreuzt den Golf. Im Zufahrtskanal weder stoppen noch ankern. Ankerlieger zeigen nur ein weisses Rundumlicht — leicht zu übersehen.
       </div>
-      <span class="src">Quelle Feuer-Kennungen und Einfahrten: Bloc Marine / Figaro Nautisme, Hafeninformationen Stand 2026 (nautisches Standardwerk, nicht amtlich) · Anfahrt Giscle: Ortskenntnis · Kennungen lesen: Karte «Lichter bei Nacht» · Verbindlich: SHOM-Seekarte 7407</span>
+      <span class="src">Quelle Feuer-Kennungen, Anfahrten und Einfahrten: Bloc Marine / Figaro Nautisme, Hafenblätter Saint-Tropez, Sainte-Maxime, Port-Grimaud und Marines de Cogolin, Stand 2026 (nautisches Standardwerk, nicht amtlich) · Anfahrt Giscle: Ortskenntnis · Kennungen lesen: Karte «Lichter bei Nacht» · Verbindlich: SHOM-Seekarte 7407</span>
     </div>
 
   </section>
@@ -1153,6 +1158,7 @@
     <button id="introok">Verstanden</button>
   </div>
 </div>
+<div id="okbar"></div>
 <div id="updbar">Neue Version gefunden — die App aktualisiert sich in wenigen Sekunden …</div>
 <nav id="tabbar"></nav>
 
@@ -1525,9 +1531,24 @@ if (document.getElementById('panel-karte').classList.contains('active')) {
 })();
 
 // ---------- Version und Update-Erkennung ----------
-const APP_VERSION = 'v50';
+const APP_VERSION = 'v52';
 const verEl = document.getElementById('appver');
 if (verEl) verEl.textContent = 'App-Version ' + APP_VERSION;
+
+// Nach einem abgeschlossenen Update einmalig bestätigen, welche Fassung jetzt läuft.
+// Die zuletzt geöffnete Version steht lokal im Gerät; weicht sie ab, gab es ein Update.
+function showUpdated() {
+  const bar = document.getElementById('okbar');
+  if (!bar) return;
+  bar.textContent = 'Update erfolgreich auf ' + APP_VERSION;
+  bar.style.display = 'block';
+  setTimeout(() => { bar.style.display = 'none'; }, 6000);
+}
+try {
+  const last = localStorage.getItem('lastVersion');
+  if (last && last !== APP_VERSION) showUpdated();
+  if (last !== APP_VERSION) localStorage.setItem('lastVersion', APP_VERSION);
+} catch (e) {}
 
 // ---------- Service Worker: macht die App offline-fähig ----------
 if ('serviceWorker' in navigator) {

@@ -1,7 +1,7 @@
 // Service Worker — cached alle App-Dateien für Offline-Betrieb.
 // Bei inhaltlichen Updates: CACHE_VERSION hochzählen, dann lädt die App beim
 // nächsten Online-Besuch automatisch die neue Version.
-const CACHE_VERSION = 'bootsregeln-v50';
+const CACHE_VERSION = 'bootsregeln-v52';
 const TILE_CACHE = 'bootsregeln-tiles-v1'; // Karten-Kacheln (IGN + OpenSeaMap), separat gecacht
 const PLAENE = [
   'sm-uebersicht', 'sm-croisette', 'sm-croisette-zrub', 'sm-centre-ville', 'sm-madrague',
@@ -38,6 +38,13 @@ self.addEventListener('activate', (event) => {
       Promise.all(keys.filter((k) => k !== CACHE_VERSION && k !== TILE_CACHE).map((k) => caches.delete(k)))
     ).then(() => self.clients.claim())
   );
+});
+
+// Die Seite kann die aktive Cache-Version abfragen (für die Update-Meldung)
+self.addEventListener('message', (event) => {
+  if (event.data === 'version' && event.source) {
+    event.source.postMessage({ type: 'version', version: CACHE_VERSION });
+  }
 });
 
 // Anfragen: Cache zuerst, Netz als Fallback (offline-first)
